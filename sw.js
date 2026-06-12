@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bp-app-v6.0'; // 關鍵大更新 V6.0
+const CACHE_NAME = 'bp-app-v6.0.1'; // 微調版號讓手機自動更新
 const urlsToCache = [
   './index.html',
   './manifest.json',
