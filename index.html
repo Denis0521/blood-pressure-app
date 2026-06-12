@@ -50,18 +50,18 @@
             --inset-shadow: rgba(0, 0, 0, 0.4);
         }
 
-        /* 深灰色主題 */
+        /* 藍灰色主題 (原為深灰/金屬灰) */
         body.theme-metal {
-            --primary-color: #9e9e9e;
-            --primary-gradient: linear-gradient(135deg, #616161, #424242);
-            --bg-color: #1a1a1a; 
-            --card-bg: #2c2c2c; 
-            --border-color: #444444; 
-            --text-dark: #f0f0f0; 
-            --text-gray: #9e9e9e; 
-            --input-bg: #1f1f1f; 
-            --table-header: #333333; 
-            --tr-even: #242424;
+            --primary-color: #78909c;
+            --primary-gradient: linear-gradient(135deg, #607d8b, #455a64);
+            --bg-color: #263238; 
+            --card-bg: #37474f; 
+            --border-color: #546e7a; 
+            --text-dark: #eceff1; 
+            --text-gray: #b0bec5; 
+            --input-bg: #1e272c; 
+            --table-header: #455a64; 
+            --tr-even: #2c3a41;
         }
         
         body.theme-dark-blue {
@@ -256,7 +256,7 @@
             <select id="theme-selector" class="theme-select" onchange="changeTheme()">
                 <option value="light">淺色 (預設)</option>
                 <option value="dark">深色</option>
-                <option value="metal">深灰色</option>
+                <option value="metal">藍灰色</option>
                 <option value="dark-blue">深藍色</option>
                 <option value="light-blue">淺藍</option>
                 <option value="light-orange">淺橙色</option>
@@ -269,7 +269,7 @@
                 <button class="btn-outline" onclick="document.getElementById('import-file').click(); closeTools();">📂 匯入舊記錄檔案</button>
             </div>
             
-            <div class="version-text">目前版本：V5</div>
+            <div class="version-text">目前版本：V5.1</div>
             
         </div>
     </div>
@@ -278,11 +278,12 @@
     let appData = JSON.parse(localStorage.getItem('bpRecords')) || {};
     let editDate = null, editPeriod = null;
 
+    // 動態更新狀態列顏色 (theme-color)
     function updateThemeMeta(theme) {
         const themeColors = {
             'light': '#eaf1f0',
             'dark': '#121212',
-            'metal': '#1a1a1a',
+            'metal': '#263238', /* 更新為藍灰色的背景碼 */
             'dark-blue': '#0b192c',
             'light-blue': '#e1f5fe',
             'light-orange': '#fff3e0'
@@ -399,7 +400,7 @@
         });
     }
 
-    // PDF 匯出功能：徹底取消 rowspan 合併儲存格，解決色塊遮擋 Bug
+    // PDF 匯出功能 - 穩定維持無合併儲存格設計
     function exportPDF() {
         const startDateStr = document.getElementById('start-date').value, endDateStr = document.getElementById('end-date').value;
         if(!startDateStr || !endDateStr) { alert('請先選擇匯出範圍'); return; }
