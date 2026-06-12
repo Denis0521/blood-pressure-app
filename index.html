@@ -8,7 +8,6 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="apple-touch-icon" href="icon.svg">
-    <!-- 預設 theme-color，將由 JS 動態控制切換 -->
     <meta name="theme-color" content="#eaf1f0">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -270,7 +269,6 @@
                 <button class="btn-outline" onclick="document.getElementById('import-file').click(); closeTools();">📂 匯入舊記錄檔案</button>
             </div>
             
-            <!-- 版本號顯示更新為 V5 -->
             <div class="version-text">目前版本：V5</div>
             
         </div>
@@ -402,12 +400,11 @@
         });
     }
 
-    // PDF 匯出功能 - 重新設計排版，確保線條整齊、文字不截斷
+    // PDF 匯出功能 - 修復合併儲存格的背景覆蓋問題
     function exportPDF() {
         const startDateStr = document.getElementById('start-date').value, endDateStr = document.getElementById('end-date').value;
         if(!startDateStr || !endDateStr) { alert('請先選擇匯出範圍'); return; }
         
-        // 使用獨立的 CSS 樣式區塊來控制列印格式
         let pdfHtml = `
             <div style="background-color: #fff; padding: 10px; width: 100%; box-sizing: border-box;">
                 <style>
@@ -415,16 +412,19 @@
                     .pdf-title { text-align: center; font-size: 26px; font-weight: bold; margin-bottom: 15px; color: #000; letter-spacing: 2px; }
                     .pdf-subtitle { text-align: left; font-size: 14px; margin-bottom: 10px; color: #000; }
                     .pdf-table { width: 100%; border-collapse: collapse; text-align: center; font-size: 14px; table-layout: fixed; }
+                    
+                    /* 重要修正：儲存格背景設為透明 (transparent)，防止 rowspan 導致的色塊覆蓋問題 */
                     .pdf-table th, .pdf-table td { 
                         border: 1px solid #000 !important; 
-                        padding: 12px 4px; /* 增加上下 padding，避免文字貼邊被截斷 */
+                        padding: 12px 4px; 
                         vertical-align: middle; 
                         color: #000; 
-                        background-color: #fff;
-                        white-space: nowrap; /* 確保文字在同一行 */
+                        background: transparent !important; 
+                        white-space: nowrap; 
                         word-break: keep-all;
                     }
-                    /* 設定欄位寬度比例，避免互相擠壓 */
+                    .pdf-table tr { background: transparent !important; }
+                    
                     .col-date { width: 18%; }
                     .col-data { width: 13.6%; }
                 </style>
@@ -474,9 +474,8 @@
         
         pdfHtml += `</tbody></table></div></div>`;
         
-        // 增加 html2canvas 的品質設定與頁面留白 (Margin)
         const opt = {
-            margin: [15, 10, 15, 10], // 上、右、下、左留白 (mm)
+            margin: [15, 10, 15, 10], 
             filename: `血壓記錄表_${startDateStr}_至_${endDateStr}.pdf`,
             image: { type: 'jpeg', quality: 1.0 },
             html2canvas: { scale: 2, useCORS: true, letterRendering: true },
