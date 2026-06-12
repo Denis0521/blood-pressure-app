@@ -8,13 +8,14 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="apple-touch-icon" href="icon.svg">
-    <meta name="theme-color" content="#148b7f">
+    <!-- 預設 theme-color，將由 JS 動態控制切換 -->
+    <meta name="theme-color" content="#eaf1f0">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     
     <style>
-        /* 佈景主題變數 (新增了陰影深淺的變數來控制 3D 立體感) */
-        :root, body.theme-light, body.theme-metal, body.theme-light-blue, body.theme-light-orange {
+        /* 佈景主題變數 (控制 3D 立體感與顏色) */
+        :root, body.theme-light, body.theme-light-blue, body.theme-light-orange {
             --primary-color: #148b7f;
             --primary-gradient: linear-gradient(135deg, #17a294, #12796e);
             --bg-color: #eaf1f0;
@@ -32,7 +33,7 @@
             --inset-shadow: rgba(0, 0, 0, 0.15);
         }
 
-        body.theme-dark, body.theme-dark-blue {
+        body.theme-dark, body.theme-dark-blue, body.theme-metal {
             --primary-color: #26a69a;
             --primary-gradient: linear-gradient(135deg, #2dbdb0, #1f8c82);
             --bg-color: #121212;
@@ -51,11 +52,21 @@
         }
 
         /* 覆蓋其他主題的主色 */
+        
+        /* 全新：深灰色主題 (替換原本的淺金屬灰) */
         body.theme-metal {
-            --primary-color: #607d8b;
-            --primary-gradient: linear-gradient(135deg, #78909c, #546e7a);
-            --bg-color: #eceff1; --card-bg: #ffffff; --border-color: #cfd8dc; --text-dark: #37474f; --text-gray: #78909c; --input-bg: #f0f3f5; --table-header: #e3f2fd; --tr-even: #f5f7f8;
+            --primary-color: #9e9e9e;
+            --primary-gradient: linear-gradient(135deg, #616161, #424242);
+            --bg-color: #1a1a1a; 
+            --card-bg: #2c2c2c; 
+            --border-color: #444444; 
+            --text-dark: #f0f0f0; 
+            --text-gray: #9e9e9e; 
+            --input-bg: #1f1f1f; 
+            --table-header: #333333; 
+            --tr-even: #242424;
         }
+        
         body.theme-dark-blue {
             --primary-color: #4da8da;
             --primary-gradient: linear-gradient(135deg, #5ebdf0, #3c8ebd);
@@ -122,7 +133,6 @@
             flex: 1; width: 100%; padding: 14px 8px; 
             border-radius: 10px; font-size: 18px; text-align: center; box-sizing: border-box; 
             background: var(--input-bg); color: var(--text-dark); border: none;
-            /* 內陰影創造挖空感 */
             box-shadow: inset 0 4px 6px var(--inset-shadow), inset 0 2px 4px rgba(0,0,0,0.05), 0 1px 1px var(--shadow-light); 
             transition: 0.2s;
         }
@@ -249,7 +259,7 @@
             <select id="theme-selector" class="theme-select" onchange="changeTheme()">
                 <option value="light">淺色 (預設)</option>
                 <option value="dark">深色</option>
-                <option value="metal">金屬灰</option>
+                <option value="metal">深灰色</option>
                 <option value="dark-blue">深藍色</option>
                 <option value="light-blue">淺藍</option>
                 <option value="light-orange">淺橙色</option>
@@ -262,7 +272,8 @@
                 <button class="btn-outline" onclick="document.getElementById('import-file').click(); closeTools();">📂 匯入舊記錄檔案</button>
             </div>
             
-            <div class="version-text">目前版本：V3</div>
+            <!-- 版本號顯示更新為 V4 -->
+            <div class="version-text">目前版本：V4</div>
             
         </div>
     </div>
@@ -271,16 +282,32 @@
     let appData = JSON.parse(localStorage.getItem('bpRecords')) || {};
     let editDate = null, editPeriod = null;
 
+    // 動態更新狀態列顏色 (theme-color) 讓手機 OS 自動調節文字黑/白
+    function updateThemeMeta(theme) {
+        const themeColors = {
+            'light': '#eaf1f0',
+            'dark': '#121212',
+            'metal': '#1a1a1a',      // 深灰色背景
+            'dark-blue': '#0b192c',
+            'light-blue': '#e1f5fe',
+            'light-orange': '#fff3e0'
+        };
+        const color = themeColors[theme] || '#eaf1f0';
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', color);
+    }
+
     function loadTheme() {
         const savedTheme = localStorage.getItem('bpTheme') || 'light';
         document.body.className = `theme-${savedTheme}`;
         document.getElementById('theme-selector').value = savedTheme;
+        updateThemeMeta(savedTheme);
     }
 
     function changeTheme() {
         const theme = document.getElementById('theme-selector').value;
         document.body.className = `theme-${theme}`;
         localStorage.setItem('bpTheme', theme);
+        updateThemeMeta(theme);
     }
 
     function getCurrentInfo() {
@@ -381,14 +408,26 @@
         const startDateStr = document.getElementById('start-date').value, endDateStr = document.getElementById('end-date').value;
         if(!startDateStr || !endDateStr) { alert('請先選擇匯出範圍'); return; }
         
+        // PDF 模板：強制背景與所有文字皆為純黑白
         let pdfHtml = `
-            <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 20px; color: #000; background: #fff;">
-                <h2 style="text-align: center; font-size: 24px; margin-bottom: 20px;">血壓記錄表</h2>
-                <p style="text-align: left; font-size: 16px; margin-bottom: 10px;">日期區間:${startDateStr}至${endDateStr}</p>
-                <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 14px;">
+            <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 20px; color: #000; background-color: #fff;">
+                <h2 style="text-align: center; font-size: 24px; margin-bottom: 20px; color: #000;">血壓記錄表</h2>
+                <p style="text-align: left; font-size: 16px; margin-bottom: 10px; color: #000;">日期區間:${startDateStr}至${endDateStr}</p>
+                <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 14px; color: #000; background-color: #fff;">
                     <thead>
-                        <tr><th rowspan="2" style="border: 1px solid #000; padding: 10px; vertical-align: middle;">日期</th><th colspan="3" style="border: 1px solid #000; padding: 10px;">早上記錄</th><th colspan="3" style="border: 1px solid #000; padding: 10px;">晚上記錄</th></tr>
-                        <tr><th style="border:1px solid #000; padding:8px;">收縮壓</th><th style="border:1px solid #000; padding:8px;">舒張壓</th><th style="border:1px solid #000; padding:8px;">心率</th><th style="border:1px solid #000; padding:8px;">收縮壓</th><th style="border:1px solid #000; padding:8px;">舒張壓</th><th style="border:1px solid #000; padding:8px;">心率</th></tr>
+                        <tr style="background-color: #fff;">
+                            <th rowspan="2" style="border: 1px solid #000; padding: 10px; vertical-align: middle; color: #000; background-color: #fff;">日期</th>
+                            <th colspan="3" style="border: 1px solid #000; padding: 10px; color: #000; background-color: #fff;">早上記錄</th>
+                            <th colspan="3" style="border: 1px solid #000; padding: 10px; color: #000; background-color: #fff;">晚上記錄</th>
+                        </tr>
+                        <tr style="background-color: #fff;">
+                            <th style="border:1px solid #000; padding:8px; color: #000; background-color: #fff;">收縮壓</th>
+                            <th style="border:1px solid #000; padding:8px; color: #000; background-color: #fff;">舒張壓</th>
+                            <th style="border:1px solid #000; padding:8px; color: #000; background-color: #fff;">心率</th>
+                            <th style="border:1px solid #000; padding:8px; color: #000; background-color: #fff;">收縮壓</th>
+                            <th style="border:1px solid #000; padding:8px; color: #000; background-color: #fff;">舒張壓</th>
+                            <th style="border:1px solid #000; padding:8px; color: #000; background-color: #fff;">心率</th>
+                        </tr>
                     </thead><tbody>
         `;
         let currentDate = new Date(startDateStr), endDate = new Date(endDateStr);
@@ -396,10 +435,15 @@
             let date = currentDate.toISOString().split('T')[0];
             const m = (appData[date] && appData[date].morning) || {}, e = (appData[date] && appData[date].evening) || {};
             if(m.sys || m.dia || m.hr || e.sys || e.dia || e.hr) {
-                pdfHtml += `<tr>
-                    <td style="border: 1px solid #000; padding: 8px;">${date}</td>
-                    <td style="border: 1px solid #000; padding: 8px;">${m.sys || ''}</td><td style="border: 1px solid #000; padding: 8px;">${m.dia || ''}</td><td style="border: 1px solid #000; padding: 8px;">${m.hr || ''}</td>
-                    <td style="border: 1px solid #000; padding: 8px;">${e.sys || ''}</td><td style="border: 1px solid #000; padding: 8px;">${e.dia || ''}</td><td style="border: 1px solid #000; padding: 8px;">${e.hr || ''}</td>
+                // 每行強制套用白底黑字黑邊框
+                pdfHtml += `<tr style="background-color: #fff;">
+                    <td style="border: 1px solid #000; padding: 8px; color: #000; background-color: #fff;">${date}</td>
+                    <td style="border: 1px solid #000; padding: 8px; color: #000; background-color: #fff;">${m.sys || ''}</td>
+                    <td style="border: 1px solid #000; padding: 8px; color: #000; background-color: #fff;">${m.dia || ''}</td>
+                    <td style="border: 1px solid #000; padding: 8px; color: #000; background-color: #fff;">${m.hr || ''}</td>
+                    <td style="border: 1px solid #000; padding: 8px; color: #000; background-color: #fff;">${e.sys || ''}</td>
+                    <td style="border: 1px solid #000; padding: 8px; color: #000; background-color: #fff;">${e.dia || ''}</td>
+                    <td style="border: 1px solid #000; padding: 8px; color: #000; background-color: #fff;">${e.hr || ''}</td>
                 </tr>`;
             }
             currentDate.setDate(currentDate.getDate() + 1);
