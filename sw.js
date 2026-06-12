@@ -1,17 +1,36 @@
-const CACHE_NAME = 'bp-app-v2';
+const CACHE_NAME = 'bp-app-v3'; // 版本號更新為 v3
 const urlsToCache = [
   './index.html',
   './manifest.json',
   './icon.svg'
 ];
 
+// 安裝時下載新檔案，並強制立即接管
 self.addEventListener('install', event => {
+  self.skipWaiting(); 
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => cache.addAll(urlsToCache))
   );
 });
 
+// 啟動時清除舊版本的快取記憶
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheName !== CACHE_NAME) {
+            console.log('刪除舊快取:', cacheName);
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    }).then(() => self.clients.claim())
+  );
+});
+
+// 抓取檔案時優先使用快取，沒有才透過網路抓
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
