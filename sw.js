@@ -1,11 +1,10 @@
-const CACHE_NAME = 'bp-app-v5.4'; // 版本號更新為 v5.4
+const CACHE_NAME = 'bp-app-v6.0'; // 關鍵大更新 V6.0
 const urlsToCache = [
   './index.html',
   './manifest.json',
   './icon.svg'
 ];
 
-// 安裝時下載新檔案，並強制立即接管
 self.addEventListener('install', event => {
   self.skipWaiting(); 
   event.waitUntil(
@@ -14,7 +13,6 @@ self.addEventListener('install', event => {
   );
 });
 
-// 啟動時清除所有舊版本的快取記憶
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(cacheNames => {
@@ -26,11 +24,10 @@ self.addEventListener('activate', event => {
           }
         })
       );
-    }).then(() => self.clients.claim()) // 立即控制手機畫面
+    }).then(() => self.clients.claim()) 
   );
 });
 
-// 抓取檔案時優先使用快取，沒有才透過網路抓
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
