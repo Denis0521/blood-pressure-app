@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bp-app-v5'; // 版本號更新為 v5
+const CACHE_NAME = 'bp-app-v5'; // 關鍵：版本號改成 v5
 const urlsToCache = [
   './index.html',
   './manifest.json',
@@ -14,7 +14,7 @@ self.addEventListener('install', event => {
   );
 });
 
-// 啟動時清除舊版本的快取記憶
+// 啟動時清除所有舊版本的快取記憶
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(cacheNames => {
@@ -26,7 +26,7 @@ self.addEventListener('activate', event => {
           }
         })
       );
-    }).then(() => self.clients.claim())
+    }).then(() => self.clients.claim()) // 立即控制手機畫面
   );
 });
 
