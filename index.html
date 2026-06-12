@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>血壓記錄</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <link rel="apple-touch-icon" href="icon.svg">
+    <meta name="theme-color" content="#148b7f">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #148b7f;
+            --primary-gradient: linear-gradient(135deg, #17a294, #12796e);
+            --bg-color: #eaf1f0;
+            --card-bg: #ffffff;
+            --border-color: #d1e3e0;
+            --text-dark: #2c3e50;
+            --text-gray: #7f8c8d;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang TC', '微軟正黑體', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            margin: 0;
+            padding: 16px;
+        }
+
+        /* 標題與工具列 */
+        .header-container { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 8px; 
+            width: 100%;
+        }
+        
+        h2 { margin: 0; font-size: 26px; color: #1c2833; text-shadow: 1px 1px 2px rgba(0,0,0,0.05); }
+        
+        /* 具有立體按壓感的工具按鈕 */
+        .tool-btn { 
+            background: #ffffff; 
+            border: 1px solid var(--border-color); 
+            font-size: 16px; 
+            color: var(--primary-color); 
+            cursor: pointer; 
+            font-weight: bold; 
+            padding: 8px 16px; 
+            border-radius: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.04), 0 2px 4px rgba(0,0,0,0.02);
+            transition: all 0.2s ease;
+        }
+        .tool-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .subtitle { color: var(--text-gray); margin-bottom: 20px; font-size: 15px; font-weight: 500; }
+
+        /* 高質感 3D 區塊卡片 */
+        .card { 
+            background: var(--card-bg); 
+            border-radius: 16px; 
+            padding: 20px; 
+            margin-bottom: 20px; 
+            box-shadow: 0 10px 24px rgba(20, 139, 127, 0.08), 0 2px 8px rgba(0,0,0,0.03);
+            border: 1px solid #f7fbfb;
+        }
+
+        .card-title { 
+            font-size: 18px; 
+            font-weight: 800; 
+            margin-bottom: 16px; 
+            color: #34495e;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--bg-color);
+        }
+
+        /* 內陰影立體輸入框 */
+        .input-group { display: flex; gap: 12px; margin-bottom: 20px; }
+        .input-group input { 
+            flex: 1; 
+            width: 100%; 
+            padding: 14px 8px; 
+            border: 1px solid var(--border-color); 
+            border-radius: 12px; 
+            font-size: 16px; 
+            text-align: center; 
+            box-sizing: border-box; 
+            background: #f9fdfc;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.04);
+            transition: 0.2s;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(20, 139, 127, 0.15), inset 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        /* 立體浮雕按鈕 */
+        .btn-group { display: flex; gap: 12px; margin-bottom: 12px; }
+        button { 
+            flex: 1; 
+            padding: 14px; 
+            border-radius: 12px; 
+            font-size: 16px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            border: none; 
+            transition: all 0.2s ease; 
+        }
+        .btn-primary { 
+            background: var(--primary-gradient); 
+            color: white; 
+            box-shadow: 0 6px 15px rgba(20, 139, 127, 0.3);
+        }
+        .btn-primary:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 6px rgba(20, 139, 127, 0.3);
+        }
+
+        .btn-outline { 
+            background-color: #f0f8f7; 
+            color: var(--primary-color); 
+            border: 1px solid var(--primary-color);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+        }
+        .btn-outline:active {
+            transform: translateY(2px);
+            background-color: #e4f1f0;
+        }
+
+        .btn-backup { 
+            background: linear-gradient(135deg, #ffb74d, #f57c00); 
+            color: white; 
+            box-shadow: 0 6px 15px rgba(245, 124, 0, 0.3); 
+        }
+        .btn-backup:active { transform: translateY(2px); box-shadow: 0 2px 6px rgba(245, 124, 0, 0.3); }
+
+        .hint-text { color: #e74c3c; font-size: 14px; margin-bottom: 12px; font-weight: 500; }
+
+        /* 表格區塊 */
+        .table-responsive { 
+            width: 100%; 
+            overflow-x: auto; 
+            -webkit-overflow-scrolling: touch; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            border: 1px solid var(--border-color);
+        }
+        table { width: 100%; min-width: 650px; border-collapse: collapse; text-align: center; font-size: 15px; background: white;}
+        th, td { padding: 12px 8px; border: 1px solid var(--border-color); white-space: nowrap; }
+        th { background-color: #f2fafa; color: #2c3e50; font-weight: bold; }
+        tr:nth-child(even) { background-color: #fafdfc; }
+
+        .action-link { color: #d35400; font-weight: bold; cursor: pointer; text-decoration: underline; padding: 4px 8px; }
+
+        /* 工具選單彈窗樣式 */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
+        .modal-content { background: white; padding: 24px; border-radius: 16px; width: 90%; max-width: 350px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); transform: translateY(-20px); }
+        .modal-close { float: right; font-size: 26px; font-weight: bold; color: #aaa; cursor: pointer; line-height: 1; transition: 0.2s; }
+        .modal-close:hover { color: #333; }
+    </style>
+</head>
+<body>
+
+    <div class="header-container">
+        <h2>血壓記錄</h2>
+        <button class="tool-btn" onclick="openTools()">⚙️ 工具</button>
+    </div>
+    
+    <div class="subtitle" id="current-time-display">今日：載入中... 時段：載入中...</div>
+
+    <input type="file" id="import-file" accept=".json" style="display: none;">
+
+    <div class="card">
+        <div class="card-title">新增 / 修改記錄</div>
+        <div class="input-group">
+            <input type="number" id="sys" placeholder="收縮壓">
+            <input type="number" id="dia" placeholder="舒張壓">
+            <input type="number" id="hr" placeholder="心率">
+        </div>
+        <div class="btn-group">
+            <button class="btn-primary" onclick="saveRecord()">儲存本時段</button>
+            <button class="btn-outline" onclick="clearInputs()">取消修改</button>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-title">血壓記錄查詢與輸出</div>
+        <div class="hint-text">💡 點擊右側的「補填」也可直接新增過去記錄</div>
+        <div class="input-group">
+            <input type="date" id="start-date">
+            <input type="date" id="end-date">
+        </div>
+        <div class="btn-group">
+            <button class="btn-outline" onclick="renderTable()">開始查詢</button>
+            <button class="btn-primary" onclick="exportPDF()">輸出 A4 PDF</button>
+        </div>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>日期</th><th>早收</th><th>早舒</th><th>早心</th><th>改早</th>
+                        <th>晚收</th><th>晚舒</th><th>晚心</th><th>改晚</th>
+                    </tr>
+                </thead>
+                <tbody id="record-table-body"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="toolsModal" class="modal-overlay">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeTools()">&times;</span>
+            <div class="card-title" style="margin-top: 5px;">資料備份與還原</div>
+            <p style="font-size: 14px; color: var(--text-gray); margin-bottom: 20px; line-height: 1.5;">更換手機或重裝軟體前，請務必先匯出備份檔案至「下載」資料夾。</p>
+            <div class="btn-group" style="flex-direction: column; gap: 15px;">
+                <button class="btn-backup" onclick="exportBackup()">📥 匯出最新備份 (.json)</button>
+                <button class="btn-outline" onclick="document.getElementById('import-file').click(); closeTools();">📂 匯入舊記錄檔案</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    let appData = JSON.parse(localStorage.getItem('bpRecords')) || {};
+    let editDate = null, editPeriod = null;
+
+    function getCurrentInfo() {
+        const now = new Date(), offset = now.getTimezoneOffset() * 60000;
+        const localISOTime = (new Date(now - offset)).toISOString().split('T')[0];
+        const period = now.getHours() < 12 ? 'morning' : 'evening';
+        return { date: localISOTime, period, periodText: period === 'morning' ? '早上' : '晚上' };
+    }
+
+    function init() {
+        const info = getCurrentInfo();
+        document.getElementById('current-time-display').innerText = `今日：${info.date} 時段：${info.periodText}`;
+        const twoDaysAgo = new Date(); twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+        document.getElementById('start-date').value = twoDaysAgo.toISOString().split('T')[0];
+        document.getElementById('end-date').value = info.date;
+        renderTable();
+    }
+
+    function clearInputs() {
+        document.getElementById('sys').value = '';
+        document.getElementById('dia').value = '';
+        document.getElementById('hr').value = '';
+        editDate = null; editPeriod = null;
+    }
+
+    function saveRecord() {
+        const sys = document.getElementById('sys').value, dia = document.getElementById('dia').value, hr = document.getElementById('hr').value;
+        if (!sys && !dia && !hr) { alert('請至少輸入一項數值！'); return; }
+        const info = getCurrentInfo(), targetDate = editDate || info.date, targetPeriod = editPeriod || info.period;
+        if (!appData[targetDate]) appData[targetDate] = { morning: {}, evening: {} };
+        appData[targetDate][targetPeriod] = { sys, dia, hr };
+        localStorage.setItem('bpRecords', JSON.stringify(appData));
+        alert(`${targetDate} ${targetPeriod === 'morning' ? '早上' : '晚上'} 記錄已儲存！`);
+        clearInputs(); renderTable();
+    }
+
+    function openTools() { document.getElementById('toolsModal').style.display = 'flex'; }
+    function closeTools() { document.getElementById('toolsModal').style.display = 'none'; }
+
+    function exportBackup() {
+        if (Object.keys(appData).length === 0) { alert('尚無資料可供備份。'); return; }
+        const url = URL.createObjectURL(new Blob([JSON.stringify(appData, null, 2)], { type: 'application/json' }));
+        const a = document.createElement('a'); a.href = url; a.download = `血壓記錄_最新備份.json`;
+        document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+        alert('備份已下載至您的手機「下載」資料夾！\n檔名為：血壓記錄_最新備份.json'); closeTools();
+    }
+
+    document.getElementById('import-file').addEventListener('change', function(e) {
+        const file = e.target.files[0]; if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            try {
+                appData = { ...appData, ...JSON.parse(event.target.result) };
+                localStorage.setItem('bpRecords', JSON.stringify(appData));
+                alert('舊記錄已完美還原！'); renderTable();
+            } catch (error) { alert('檔案讀取失敗，請確認是否選取了正確的 JSON 備份檔。'); }
+            e.target.value = ''; 
+        };
+        reader.readAsText(file);
+    });
+
+    function editRecord(date, period) {
+        editDate = date; editPeriod = period;
+        const record = appData[date]?.[period] || {};
+        document.getElementById('sys').value = record.sys || '';
+        document.getElementById('dia').value = record.dia || '';
+        document.getElementById('hr').value = record.hr || '';
+        alert(`已鎖定：${date} (${period === 'morning' ? '早上' : '晚上'})\n請修改數值後點擊「儲存本時段」。`);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function renderTable() {
+        const tbody = document.getElementById('record-table-body'); tbody.innerHTML = '';
+        const startDateStr = document.getElementById('start-date').value, endDateStr = document.getElementById('end-date').value;
+        if(!startDateStr || !endDateStr) return;
+        let currentDate = new Date(startDateStr), endDate = new Date(endDateStr);
+        const dateArray = [];
+        while (currentDate <= endDate) { dateArray.push(currentDate.toISOString().split('T')[0]); currentDate.setDate(currentDate.getDate() + 1); }
+        
+        dateArray.forEach(date => {
+            const data = appData[date] || { morning: {}, evening: {} }, m = data.morning || {}, e = data.evening || {};
+            const mAction = (m.sys || m.dia || m.hr) ? '修改' : '補填', eAction = (e.sys || e.dia || e.hr) ? '修改' : '補填';
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${date}</td><td>${m.sys || ''}</td><td>${m.dia || ''}</td><td>${m.hr || ''}</td>
+                <td><span class="action-link" onclick="editRecord('${date}', 'morning')">${mAction}</span></td>
+                <td>${e.sys || ''}</td><td>${e.dia || ''}</td><td>${e.hr || ''}</td>
+                <td><span class="action-link" onclick="editRecord('${date}', 'evening')">${eAction}</span></td>`;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function exportPDF() {
+        const startDateStr = document.getElementById('start-date').value, endDateStr = document.getElementById('end-date').value;
+        if(!startDateStr || !endDateStr) { alert('請先選擇匯出範圍'); return; }
+        
+        let pdfHtml = `
+            <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 20px; color: #000;">
+                <h2 style="text-align: center; font-size: 24px; margin-bottom: 20px;">血壓記錄表</h2>
+                <p style="text-align: left; font-size: 16px; margin-bottom: 10px;">日期區間:${startDateStr}至${endDateStr}</p>
+                <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 14px;">
+                    <thead>
+                        <tr><th rowspan="2" style="border: 1px solid #000; padding: 10px; vertical-align: middle;">日期</th><th colspan="3" style="border: 1px solid #000; padding: 10px;">早上記錄</th><th colspan="3" style="border: 1px solid #000; padding: 10px;">晚上記錄</th></tr>
+                        <tr><th style="border:1px solid #000; padding:8px;">收縮壓</th><th style="border:1px solid #000; padding:8px;">舒張壓</th><th style="border:1px solid #000; padding:8px;">心率</th><th style="border:1px solid #000; padding:8px;">收縮壓</th><th style="border:1px solid #000; padding:8px;">舒張壓</th><th style="border:1px solid #000; padding:8px;">心率</th></tr>
+                    </thead><tbody>
+        `;
+        let currentDate = new Date(startDateStr), endDate = new Date(endDateStr);
+        while (currentDate <= endDate) {
+            let date = currentDate.toISOString().split('T')[0];
+            const m = (appData[date] && appData[date].morning) || {}, e = (appData[date] && appData[date].evening) || {};
+            if(m.sys || m.dia || m.hr || e.sys || e.dia || e.hr) {
+                pdfHtml += `<tr>
+                    <td style="border: 1px solid #000; padding: 8px;">${date}</td>
+                    <td style="border: 1px solid #000; padding: 8px;">${m.sys || ''}</td><td style="border: 1px solid #000; padding: 8px;">${m.dia || ''}</td><td style="border: 1px solid #000; padding: 8px;">${m.hr || ''}</td>
+                    <td style="border: 1px solid #000; padding: 8px;">${e.sys || ''}</td><td style="border: 1px solid #000; padding: 8px;">${e.dia || ''}</td><td style="border: 1px solid #000; padding: 8px;">${e.hr || ''}</td>
+                </tr>`;
+            }
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+        pdfHtml += `</tbody></table></div>`;
+        html2pdf().set({ margin: 10, filename: `血壓記錄表_${startDateStr}_至_${endDateStr}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(pdfHtml).save().then(() => alert('PDF 已成功儲存至下載資料夾！'));
+    }
+
+    init();
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js').then(reg => {
+                console.log('SW 註冊成功');
+            });
+        });
+    }
+</script>
+</body>
+</html>
