@@ -400,30 +400,34 @@
         });
     }
 
-    // PDF 匯出功能 - 修復合併儲存格的背景覆蓋問題
+    // PDF 匯出功能 - 強制覆蓋所有網頁主題變數，確保純白底與黑字
     function exportPDF() {
         const startDateStr = document.getElementById('start-date').value, endDateStr = document.getElementById('end-date').value;
         if(!startDateStr || !endDateStr) { alert('請先選擇匯出範圍'); return; }
         
         let pdfHtml = `
-            <div style="background-color: #fff; padding: 10px; width: 100%; box-sizing: border-box;">
+            <div style="background-color: #ffffff !important; padding: 10px; width: 100%; box-sizing: border-box;">
                 <style>
-                    .pdf-container { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #000; width: 100%; }
-                    .pdf-title { text-align: center; font-size: 26px; font-weight: bold; margin-bottom: 15px; color: #000; letter-spacing: 2px; }
-                    .pdf-subtitle { text-align: left; font-size: 14px; margin-bottom: 10px; color: #000; }
-                    .pdf-table { width: 100%; border-collapse: collapse; text-align: center; font-size: 14px; table-layout: fixed; }
+                    /* 強制設定底色與文字顏色，避免被深色主題污染 */
+                    .pdf-container { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #000000 !important; width: 100%; background-color: #ffffff !important; }
+                    .pdf-title { text-align: center; font-size: 26px; font-weight: bold; margin-bottom: 15px; color: #000000 !important; letter-spacing: 2px; }
+                    .pdf-subtitle { text-align: left; font-size: 14px; margin-bottom: 10px; color: #000000 !important; }
+                    .pdf-table { width: 100%; border-collapse: collapse; text-align: center; font-size: 14px; table-layout: fixed; background-color: #ffffff !important; color: #000000 !important; }
                     
-                    /* 重要修正：儲存格背景設為透明 (transparent)，防止 rowspan 導致的色塊覆蓋問題 */
-                    .pdf-table th, .pdf-table td { 
-                        border: 1px solid #000 !important; 
-                        padding: 12px 4px; 
-                        vertical-align: middle; 
-                        color: #000; 
-                        background: transparent !important; 
-                        white-space: nowrap; 
-                        word-break: keep-all;
+                    /* 徹底覆寫 table 相關的全域 CSS */
+                    .pdf-table tr, .pdf-table tr:nth-child(even), .pdf-table thead, .pdf-table tbody { 
+                        background-color: #ffffff !important; 
+                        color: #000000 !important; 
                     }
-                    .pdf-table tr { background: transparent !important; }
+                    .pdf-table th, .pdf-table td { 
+                        border: 1px solid #000000 !important; 
+                        padding: 12px 4px !important; 
+                        vertical-align: middle !important; 
+                        color: #000000 !important; 
+                        background-color: transparent !important; /* 防止 rowspan 遮擋文字 */
+                        white-space: nowrap !important; 
+                        word-break: keep-all !important;
+                    }
                     
                     .col-date { width: 18%; }
                     .col-data { width: 13.6%; }
@@ -478,7 +482,8 @@
             margin: [15, 10, 15, 10], 
             filename: `血壓記錄表_${startDateStr}_至_${endDateStr}.pdf`,
             image: { type: 'jpeg', quality: 1.0 },
-            html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+            /* backgroundColor: '#ffffff' 會強制畫布底層渲染為白色 */
+            html2canvas: { scale: 2, useCORS: true, letterRendering: true, backgroundColor: '#ffffff' },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 
