@@ -51,9 +51,7 @@
             --inset-shadow: rgba(0, 0, 0, 0.4);
         }
 
-        /* 覆蓋其他主題的主色 */
-        
-        /* 全新：深灰色主題 (替換原本的淺金屬灰) */
+        /* 深灰色主題 */
         body.theme-metal {
             --primary-color: #9e9e9e;
             --primary-gradient: linear-gradient(135deg, #616161, #424242);
@@ -272,8 +270,8 @@
                 <button class="btn-outline" onclick="document.getElementById('import-file').click(); closeTools();">📂 匯入舊記錄檔案</button>
             </div>
             
-            <!-- 版本號顯示更新為 V4 -->
-            <div class="version-text">目前版本：V4</div>
+            <!-- 版本號顯示更新為 V5 -->
+            <div class="version-text">目前版本：V5</div>
             
         </div>
     </div>
@@ -282,12 +280,12 @@
     let appData = JSON.parse(localStorage.getItem('bpRecords')) || {};
     let editDate = null, editPeriod = null;
 
-    // 動態更新狀態列顏色 (theme-color) 讓手機 OS 自動調節文字黑/白
+    // 動態更新狀態列顏色 (theme-color)
     function updateThemeMeta(theme) {
         const themeColors = {
             'light': '#eaf1f0',
             'dark': '#121212',
-            'metal': '#1a1a1a',      // 深灰色背景
+            'metal': '#1a1a1a',
             'dark-blue': '#0b192c',
             'light-blue': '#e1f5fe',
             'light-orange': '#fff3e0'
@@ -404,52 +402,88 @@
         });
     }
 
+    // PDF 匯出功能 - 重新設計排版，確保線條整齊、文字不截斷
     function exportPDF() {
         const startDateStr = document.getElementById('start-date').value, endDateStr = document.getElementById('end-date').value;
         if(!startDateStr || !endDateStr) { alert('請先選擇匯出範圍'); return; }
         
-        // PDF 模板：強制背景與所有文字皆為純黑白
+        // 使用獨立的 CSS 樣式區塊來控制列印格式
         let pdfHtml = `
-            <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; padding: 20px; color: #000; background-color: #fff;">
-                <h2 style="text-align: center; font-size: 24px; margin-bottom: 20px; color: #000;">血壓記錄表</h2>
-                <p style="text-align: left; font-size: 16px; margin-bottom: 10px; color: #000;">日期區間:${startDateStr}至${endDateStr}</p>
-                <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 14px; color: #000; background-color: #fff;">
-                    <thead>
-                        <tr style="background-color: #fff;">
-                            <th rowspan="2" style="border: 1px solid #000; padding: 10px; vertical-align: middle; color: #000; background-color: #fff;">日期</th>
-                            <th colspan="3" style="border: 1px solid #000; padding: 10px; color: #000; background-color: #fff;">早上記錄</th>
-                            <th colspan="3" style="border: 1px solid #000; padding: 10px; color: #000; background-color: #fff;">晚上記錄</th>
-                        </tr>
-                        <tr style="background-color: #fff;">
-                            <th style="border:1px solid #000; padding:8px; color: #000; background-color: #fff;">收縮壓</th>
-                            <th style="border:1px solid #000; padding:8px; color: #000; background-color: #fff;">舒張壓</th>
-                            <th style="border:1px solid #000; padding:8px; color: #000; background-color: #fff;">心率</th>
-                            <th style="border:1px solid #000; padding:8px; color: #000; background-color: #fff;">收縮壓</th>
-                            <th style="border:1px solid #000; padding:8px; color: #000; background-color: #fff;">舒張壓</th>
-                            <th style="border:1px solid #000; padding:8px; color: #000; background-color: #fff;">心率</th>
-                        </tr>
-                    </thead><tbody>
+            <div style="background-color: #fff; padding: 10px; width: 100%; box-sizing: border-box;">
+                <style>
+                    .pdf-container { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #000; width: 100%; }
+                    .pdf-title { text-align: center; font-size: 26px; font-weight: bold; margin-bottom: 15px; color: #000; letter-spacing: 2px; }
+                    .pdf-subtitle { text-align: left; font-size: 14px; margin-bottom: 10px; color: #000; }
+                    .pdf-table { width: 100%; border-collapse: collapse; text-align: center; font-size: 14px; table-layout: fixed; }
+                    .pdf-table th, .pdf-table td { 
+                        border: 1px solid #000 !important; 
+                        padding: 12px 4px; /* 增加上下 padding，避免文字貼邊被截斷 */
+                        vertical-align: middle; 
+                        color: #000; 
+                        background-color: #fff;
+                        white-space: nowrap; /* 確保文字在同一行 */
+                        word-break: keep-all;
+                    }
+                    /* 設定欄位寬度比例，避免互相擠壓 */
+                    .col-date { width: 18%; }
+                    .col-data { width: 13.6%; }
+                </style>
+                <div class="pdf-container">
+                    <div class="pdf-title">血壓記錄表</div>
+                    <div class="pdf-subtitle">日期區間: ${startDateStr} 至 ${endDateStr}</div>
+                    <table class="pdf-table">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" class="col-date">日期</th>
+                                <th colspan="3">早上記錄</th>
+                                <th colspan="3">晚上記錄</th>
+                            </tr>
+                            <tr>
+                                <th class="col-data">收縮壓</th>
+                                <th class="col-data">舒張壓</th>
+                                <th class="col-data">心率</th>
+                                <th class="col-data">收縮壓</th>
+                                <th class="col-data">舒張壓</th>
+                                <th class="col-data">心率</th>
+                            </tr>
+                        </thead>
+                        <tbody>
         `;
-        let currentDate = new Date(startDateStr), endDate = new Date(endDateStr);
+        
+        let currentDate = new Date(startDateStr);
+        const endDate = new Date(endDateStr);
+        
         while (currentDate <= endDate) {
             let date = currentDate.toISOString().split('T')[0];
-            const m = (appData[date] && appData[date].morning) || {}, e = (appData[date] && appData[date].evening) || {};
+            const m = (appData[date] && appData[date].morning) || {};
+            const e = (appData[date] && appData[date].evening) || {};
+            
             if(m.sys || m.dia || m.hr || e.sys || e.dia || e.hr) {
-                // 每行強制套用白底黑字黑邊框
-                pdfHtml += `<tr style="background-color: #fff;">
-                    <td style="border: 1px solid #000; padding: 8px; color: #000; background-color: #fff;">${date}</td>
-                    <td style="border: 1px solid #000; padding: 8px; color: #000; background-color: #fff;">${m.sys || ''}</td>
-                    <td style="border: 1px solid #000; padding: 8px; color: #000; background-color: #fff;">${m.dia || ''}</td>
-                    <td style="border: 1px solid #000; padding: 8px; color: #000; background-color: #fff;">${m.hr || ''}</td>
-                    <td style="border: 1px solid #000; padding: 8px; color: #000; background-color: #fff;">${e.sys || ''}</td>
-                    <td style="border: 1px solid #000; padding: 8px; color: #000; background-color: #fff;">${e.dia || ''}</td>
-                    <td style="border: 1px solid #000; padding: 8px; color: #000; background-color: #fff;">${e.hr || ''}</td>
+                pdfHtml += `<tr>
+                    <td>${date}</td>
+                    <td>${m.sys || ''}</td>
+                    <td>${m.dia || ''}</td>
+                    <td>${m.hr || ''}</td>
+                    <td>${e.sys || ''}</td>
+                    <td>${e.dia || ''}</td>
+                    <td>${e.hr || ''}</td>
                 </tr>`;
             }
             currentDate.setDate(currentDate.getDate() + 1);
         }
-        pdfHtml += `</tbody></table></div>`;
-        html2pdf().set({ margin: 10, filename: `血壓記錄表_${startDateStr}_至_${endDateStr}.pdf`, image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2 }, jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' } }).from(pdfHtml).save().then(() => alert('PDF 已成功儲存至下載資料夾！'));
+        
+        pdfHtml += `</tbody></table></div></div>`;
+        
+        // 增加 html2canvas 的品質設定與頁面留白 (Margin)
+        const opt = {
+            margin: [15, 10, 15, 10], // 上、右、下、左留白 (mm)
+            filename: `血壓記錄表_${startDateStr}_至_${endDateStr}.pdf`,
+            image: { type: 'jpeg', quality: 1.0 },
+            html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(pdfHtml).save().then(() => alert('PDF 已成功儲存至下載資料夾！'));
     }
 
     init();
