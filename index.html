@@ -25,8 +25,6 @@
             --input-bg: #f9fdfc;
             --table-header: #f2fafa;
             --tr-even: #fafdfc;
-            
-            /* 淺色背景的 3D 陰影 */
             --shadow-dark: rgba(0, 0, 0, 0.2);
             --shadow-light: rgba(255, 255, 255, 0.7);
             --inset-shadow: rgba(0, 0, 0, 0.15);
@@ -43,16 +41,12 @@
             --input-bg: #181818;
             --table-header: #2c2c2c;
             --tr-even: #252525;
-            
-            /* 深色背景的 3D 陰影 */
             --shadow-dark: rgba(0, 0, 0, 0.6);
             --shadow-light: rgba(255, 255, 255, 0.05);
             --inset-shadow: rgba(0, 0, 0, 0.4);
         }
 
-        /* 覆蓋其他主題的專屬色 */
-        
-        /* 全新：灰黑色 (深灰質感) */
+        /* 灰黑色 (深灰質感) */
         body.theme-metal {
             --primary-color: #9e9e9e;
             --primary-gradient: linear-gradient(135deg, #757575, #424242);
@@ -64,8 +58,6 @@
             --input-bg: #2a2a2a; 
             --table-header: #424242; 
             --tr-even: #252525;
-            
-            /* 沿用深色背景的 3D 陰影 */
             --shadow-dark: rgba(0, 0, 0, 0.6);
             --shadow-light: rgba(255, 255, 255, 0.05);
             --inset-shadow: rgba(0, 0, 0, 0.4);
@@ -110,21 +102,17 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* 標題與工具列 */
         .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; width: 100%; }
         h2 { margin: 0; font-size: 26px; font-weight: bold; text-shadow: 1px 1px 2px rgba(0,0,0,0.05); }
         .subtitle { color: var(--text-gray); margin-bottom: 20px; font-size: 16px; font-weight: bold; }
 
-        /* 高質感區塊卡片 */
         .card { background: var(--card-bg); border-radius: 16px; padding: 20px; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); border: 1px solid var(--border-color); transition: background-color 0.3s ease; }
         .card-title { font-size: 18px; font-weight: 800; margin-bottom: 16px; color: var(--text-dark); padding-bottom: 10px; border-bottom: 2px solid var(--border-color); }
 
-        /* 挖空立體感的輸入框 */
         .input-group { display: flex; gap: 12px; margin-bottom: 20px; }
         .input-group input { flex: 1; width: 100%; padding: 14px 8px; border-radius: 10px; font-size: 18px; text-align: center; box-sizing: border-box; background: var(--input-bg); color: var(--text-dark); border: none; box-shadow: inset 0 4px 6px var(--inset-shadow), inset 0 2px 4px rgba(0,0,0,0.05), 0 1px 1px var(--shadow-light); transition: 0.2s; }
         .input-group input:focus { outline: none; box-shadow: inset 0 4px 6px var(--inset-shadow), 0 0 0 2px var(--primary-color); }
 
-        /* 突出立體感的按鈕設定 */
         .btn-group { display: flex; gap: 12px; margin-bottom: 12px; }
         button { flex: 1; padding: 14px; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; border: none; transition: all 0.1s ease; }
         
@@ -136,7 +124,6 @@
 
         .hint-text { color: #e74c3c; font-size: 14px; margin-bottom: 12px; font-weight: bold; }
 
-        /* 表格區塊 */
         .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); border: 1px solid var(--border-color); }
         table { width: 100%; min-width: 650px; border-collapse: collapse; text-align: center; font-size: 15px; background: var(--card-bg); color: var(--text-dark); }
         th, td { padding: 12px 8px; border: 1px solid var(--border-color); white-space: nowrap; }
@@ -144,7 +131,6 @@
         tr:nth-child(even) { background-color: var(--tr-even); }
         .action-link { color: #d35400; font-weight: bold; cursor: pointer; text-decoration: underline; padding: 4px 8px; }
 
-        /* 工具選單 */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
         .modal-content { background: var(--card-bg); color: var(--text-dark); padding: 24px; border-radius: 16px; width: 90%; max-width: 350px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transform: translateY(-20px); border: 1px solid var(--border-color); position: relative; }
         .modal-close { float: right; font-size: 26px; font-weight: bold; color: var(--text-gray); cursor: pointer; line-height: 1; transition: 0.2s; }
@@ -224,7 +210,7 @@
                 <button class="btn-outline" onclick="document.getElementById('import-file').click(); closeTools();">📂 匯入舊記錄檔案</button>
             </div>
             
-            <div class="version-text">目前版本：V5.3</div>
+            <div class="version-text">目前版本：V5.4</div>
             
         </div>
     </div>
@@ -237,7 +223,7 @@
         const themeColors = {
             'light': '#eaf1f0',
             'dark': '#121212',
-            'metal': '#212121', /* 灰黑色背景色 */
+            'metal': '#212121',
             'light-purple': '#f3e5f5',
             'dark-blue': '#0b192c',
             'light-blue': '#e1f5fe',
@@ -355,39 +341,30 @@
         });
     }
 
-    // PDF 匯出功能 
+    // PDF 匯出功能 - 終極修復手機排版擠壓與色塊問題
     function exportPDF() {
         const startDateStr = document.getElementById('start-date').value, endDateStr = document.getElementById('end-date').value;
         if(!startDateStr || !endDateStr) { alert('請先選擇匯出範圍'); return; }
         
+        // 加入寬度 800px，拒絕手機小螢幕擠壓；透明背景解決色塊覆蓋
         let pdfHtml = `
-            <div style="background-color: #ffffff !important; padding: 10px; width: 100%; box-sizing: border-box;">
+            <div style="width: 800px; background-color: #ffffff !important; padding: 20px; box-sizing: border-box;">
                 <style>
-                    .pdf-container { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #000000 !important; width: 100%; background-color: #ffffff !important; }
-                    .pdf-title { text-align: center; font-size: 26px; font-weight: bold; margin-bottom: 15px; color: #000000 !important; letter-spacing: 2px; }
-                    .pdf-subtitle { text-align: left; font-size: 14px; margin-bottom: 10px; color: #000000 !important; }
-                    .pdf-table { width: 100%; border-collapse: collapse; text-align: center; font-size: 14px; table-layout: fixed; background-color: #ffffff !important; color: #000000 !important; }
+                    .pdf-container { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #000000 !important; width: 100%; }
+                    .pdf-title { text-align: center; font-size: 28px; font-weight: bold; margin-bottom: 15px; color: #000000 !important; letter-spacing: 2px; }
+                    .pdf-subtitle { text-align: left; font-size: 16px; margin-bottom: 10px; color: #000000 !important; }
+                    .pdf-table { width: 100%; border-collapse: collapse; text-align: center; font-size: 16px; color: #000000 !important; }
                     
-                    .pdf-table tr, .pdf-table tr:nth-child(even), .pdf-table thead, .pdf-table tbody { 
-                        background-color: #ffffff !important; 
-                        color: #000000 !important; 
-                    }
+                    /* 將儲存格背景設為完全透明，讓外層的白底透上來，徹底解決 rowspan 被色塊擋住的 bug */
                     .pdf-table th, .pdf-table td { 
                         border: 1px solid #000000 !important; 
-                        padding: 12px 4px !important; 
+                        padding: 12px 6px !important; 
                         vertical-align: middle !important; 
                         color: #000000 !important; 
-                        background-color: #ffffff !important;
+                        background-color: transparent !important; 
                         white-space: nowrap !important; 
-                        word-break: keep-all !important;
                     }
-                    
-                    /* 視覺欺騙魔術：將左上角日期拆成上下兩格，並隱藏中間的橫線 */
-                    .date-top { border-bottom: none !important; padding-bottom: 2px !important; }
-                    .date-bottom { border-top: none !important; padding-top: 2px !important; }
-                    
-                    .col-date { width: 18%; }
-                    .col-data { width: 13.6%; }
+                    .pdf-table tr { background-color: transparent !important; }
                 </style>
                 <div class="pdf-container">
                     <div class="pdf-title">血壓記錄表</div>
@@ -395,18 +372,17 @@
                     <table class="pdf-table">
                         <thead>
                             <tr>
-                                <th class="col-date date-top">日期</th>
+                                <th rowspan="2" style="width: 16%;">日期</th>
                                 <th colspan="3">早上記錄</th>
                                 <th colspan="3">晚上記錄</th>
                             </tr>
                             <tr>
-                                <th class="col-date date-bottom"></th>
-                                <th class="col-data">收縮壓</th>
-                                <th class="col-data">舒張壓</th>
-                                <th class="col-data">心率</th>
-                                <th class="col-data">收縮壓</th>
-                                <th class="col-data">舒張壓</th>
-                                <th class="col-data">心率</th>
+                                <th style="width: 14%;">收縮壓</th>
+                                <th style="width: 14%;">舒張壓</th>
+                                <th style="width: 14%;">心率</th>
+                                <th style="width: 14%;">收縮壓</th>
+                                <th style="width: 14%;">舒張壓</th>
+                                <th style="width: 14%;">心率</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -440,7 +416,12 @@
             margin: [15, 10, 15, 10], 
             filename: `血壓記錄表_${startDateStr}_至_${endDateStr}.pdf`,
             image: { type: 'jpeg', quality: 1.0 },
-            html2canvas: { scale: 2, useCORS: true, letterRendering: true, backgroundColor: '#ffffff' },
+            html2canvas: { 
+                scale: 2, 
+                useCORS: true, 
+                /* 強制指定渲染寬度為 800，避免手機窄螢幕造成的排版錯亂 */
+                windowWidth: 800 
+            },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
         };
 

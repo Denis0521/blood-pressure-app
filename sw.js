@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bp-app-v5.3'; // 版本號更新為 v5.3
+const CACHE_NAME = 'bp-app-v5.4'; // 版本號更新為 v5.4
 const urlsToCache = [
   './index.html',
   './manifest.json',
