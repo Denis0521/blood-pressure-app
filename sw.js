@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bp-app-v6.0.1'; // 微調版號讓手機自動更新
+const CACHE_NAME = 'bp-app-v6.1'; // 升級為 6.1 以強制載入 90 天設定
 const urlsToCache = [
   './index.html',
   './manifest.json',

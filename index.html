@@ -82,13 +82,11 @@
         .table-responsive { width: 100%; overflow-x: auto; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); border: 1px solid var(--border-color); }
         table { width: 100%; min-width: 650px; border-collapse: collapse; text-align: center; font-size: 15px; background: var(--card-bg); color: var(--text-dark); }
         
-        /* 表格高度與內距縮減優化 */
         th, td { padding: 10px 4px; border: 1px solid var(--border-color); white-space: nowrap; }
         th { background-color: var(--table-header); }
         tr:nth-child(even) { background-color: var(--tr-even); }
         .action-link { color: #d35400; font-weight: bold; cursor: pointer; text-decoration: underline; }
 
-        /* 特殊表頭對齊設定 */
         .align-bottom { vertical-align: bottom !important; padding-bottom: 8px !important; }
         .group-header { padding-top: 8px !important; padding-bottom: 4px !important; }
         .sub-header th { padding-top: 4px !important; padding-bottom: 8px !important; }
@@ -195,7 +193,7 @@
                 <button class="btn-outline" onclick="document.getElementById('import-file').click(); closeTools();">📂 匯入舊記錄檔案</button>
             </div>
             
-            <div class="version-text">目前版本：V6.0</div>
+            <div class="version-text">目前版本：V6.1</div>
         </div>
     </div>
 
@@ -233,9 +231,12 @@
         loadTheme();
         const info = getCurrentInfo();
         document.getElementById('current-time-display').innerText = `今日：${info.date} 時段：${info.periodText}`;
-        const pastDate = new Date(); pastDate.setDate(pastDate.getDate() - 2); 
+        
+        // 預設查詢範圍改為 90 天 (包含今天往前推 89 天)
+        const pastDate = new Date(); pastDate.setDate(pastDate.getDate() - 89); 
         document.getElementById('start-date').value = pastDate.toISOString().split('T')[0];
         document.getElementById('end-date').value = info.date;
+        
         renderTable();
     }
 
@@ -300,15 +301,18 @@
             let date = currentDate.toISOString().split('T')[0];
             const data = appData[date] || { morning: {}, evening: {} }, m = data.morning || {}, e = data.evening || {};
             
-            if(m.sys || m.dia || m.hr || e.sys || e.dia || e.hr) {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `<td>${date}</td>
-                    <td>${m.sys || ''}</td><td>${m.dia || ''}</td><td>${m.hr || ''}</td>
-                    <td class="action-col"><span class="action-link" onclick="editRecord('${date}', 'morning')">修改</span></td>
-                    <td>${e.sys || ''}</td><td>${e.dia || ''}</td><td>${e.hr || ''}</td>
-                    <td class="action-col"><span class="action-link" onclick="editRecord('${date}', 'evening')">修改</span></td>`;
-                tbody.appendChild(tr);
-            }
+            // 移除原本過濾空白日期的限制，現在不管是哪天都會列出來
+            const mAction = (m.sys || m.dia || m.hr) ? '修改' : '補填';
+            const eAction = (e.sys || e.dia || e.hr) ? '修改' : '補填';
+            
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${date}</td>
+                <td>${m.sys || ''}</td><td>${m.dia || ''}</td><td>${m.hr || ''}</td>
+                <td class="action-col"><span class="action-link" onclick="editRecord('${date}', 'morning')">${mAction}</span></td>
+                <td>${e.sys || ''}</td><td>${e.dia || ''}</td><td>${e.hr || ''}</td>
+                <td class="action-col"><span class="action-link" onclick="editRecord('${date}', 'evening')">${eAction}</span></td>`;
+            tbody.appendChild(tr);
+            
             currentDate.setDate(currentDate.getDate() + 1); 
         }
     }
