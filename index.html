@@ -10,6 +10,8 @@
     <link rel="apple-touch-icon" href="icon.svg">
     <meta name="theme-color" content="#eaf1f0">
     
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
     <style>
         /* 佈景主題變數 */
         :root, body.theme-light, body.theme-light-blue, body.theme-light-orange, body.theme-metal, body.theme-light-purple, body.theme-iron-gray {
@@ -36,7 +38,6 @@
             --shadow-dark: rgba(0, 0, 0, 0.6); --shadow-light: rgba(255, 255, 255, 0.05); --inset-shadow: rgba(0, 0, 0, 0.4);
         }
 
-        /* 全新：鐵灰色 (完美復刻截圖的金融質感) */
         body.theme-iron-gray {
             --primary-color: #58a6ff; --primary-gradient: linear-gradient(135deg, #58a6ff, #3178c6);
             --bg-color: #1a1c23; --card-bg: #262932; --border-color: #3b404d;
@@ -83,6 +84,7 @@
         .header-btn { flex: none; min-width: auto; padding: 10px 20px; background: var(--card-bg); color: var(--primary-color); border: 1px solid var(--border-color); box-shadow: 0 6px 12px var(--shadow-dark), inset 0 2px 2px var(--shadow-light); }
         .btn-primary { background: var(--primary-gradient); color: white; box-shadow: 0 6px 12px var(--shadow-dark), inset 0 2px 2px var(--shadow-light); }
         .btn-outline { background: var(--card-bg); color: var(--primary-color); border: 1px solid var(--primary-color); box-shadow: 0 6px 12px var(--shadow-dark), inset 0 2px 2px var(--shadow-light); }
+        .btn-dashed { background: transparent; color: var(--primary-color); border: 2px dashed var(--primary-color); margin-bottom: 15px; width: 100%; }
         .btn-backup { background: linear-gradient(135deg, #ffb74d, #f57c00); color: white; box-shadow: 0 6px 12px var(--shadow-dark), inset 0 2px 2px var(--shadow-light); }
         button:active { transform: translateY(4px); box-shadow: inset 0 2px 4px var(--inset-shadow); }
 
@@ -106,6 +108,12 @@
         .theme-select { width: 100%; padding: 12px; border-radius: 10px; margin-bottom: 20px; background: var(--input-bg); color: var(--text-dark); border: none; font-size: 16px; box-shadow: inset 0 4px 6px var(--inset-shadow); }
         .version-text { text-align: center; margin-top: 20px; font-size: 13px; color: var(--text-gray); font-weight: bold; }
 
+        /* AI 辨識中的載入畫面 */
+        #ocr-loading { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; color: white; justify-content: center; align-items: center; flex-direction: column; }
+        .spinner { border: 5px solid rgba(255,255,255,0.2); border-top: 5px solid #58a6ff; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin-bottom: 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .loading-text { font-size: 18px; font-weight: bold; letter-spacing: 1px; }
+
         .print-only { display: none; }
 
         /* 原生列印排版 */
@@ -123,6 +131,13 @@
 </head>
 <body>
 
+    <div id="ocr-loading">
+        <div class="spinner"></div>
+        <div class="loading-text" id="ocr-status">啟動 AI 鏡頭中...</div>
+    </div>
+
+    <input type="file" id="camera-input" accept="image/*" capture="environment" style="display: none;">
+
     <div class="header-container no-print">
         <h2>血壓記錄</h2>
         <button class="header-btn" onclick="openTools()">進階</button>
@@ -134,6 +149,9 @@
 
     <div class="card no-print" id="input-card">
         <div class="card-title">新增 / 修改記錄</div>
+        
+        <button class="btn-dashed" onclick="document.getElementById('camera-input').click()">📷 拍照辨識血壓計</button>
+
         <div class="input-group">
             <input type="number" id="sys" placeholder="收縮壓">
             <input type="number" id="dia" placeholder="舒張壓">
@@ -203,7 +221,7 @@
                 <button class="btn-outline" onclick="document.getElementById('import-file').click(); closeTools();">📂 匯入舊記錄檔案</button>
             </div>
             
-            <div class="version-text">目前版本：V6.2</div>
+            <div class="version-text">目前版本：V6.3 (AI 辨識版)</div>
         </div>
     </div>
 
@@ -213,14 +231,8 @@
 
     function updateThemeMeta(theme) {
         const themeColors = { 
-            'light': '#eaf1f0', 
-            'dark': '#121212', 
-            'metal': '#212121', 
-            'iron-gray': '#1a1c23', /* 鐵灰色的狀態列顏色 */
-            'light-purple': '#f3e5f5', 
-            'dark-blue': '#0b192c', 
-            'light-blue': '#e1f5fe', 
-            'light-orange': '#fff3e0' 
+            'light': '#eaf1f0', 'dark': '#121212', 'metal': '#212121', 'iron-gray': '#1a1c23', 
+            'light-purple': '#f3e5f5', 'dark-blue': '#0b192c', 'light-blue': '#e1f5fe', 'light-orange': '#fff3e0' 
         };
         document.querySelector('meta[name="theme-color"]').setAttribute('content', themeColors[theme] || '#eaf1f0');
     }
@@ -251,8 +263,8 @@
         const info = getCurrentInfo();
         document.getElementById('current-time-display').innerText = `今日：${info.date} 時段：${info.periodText}`;
         
-        // 預設查詢範圍改為 3 天 (包含今天，往前推 2 天)，保持畫面乾淨
-        const pastDate = new Date(); pastDate.setDate(pastDate.getDate() - 2); 
+        // 預設查詢範圍 90 天
+        const pastDate = new Date(); pastDate.setDate(pastDate.getDate() - 89); 
         document.getElementById('start-date').value = pastDate.toISOString().split('T')[0];
         document.getElementById('end-date').value = info.date;
         
@@ -298,6 +310,54 @@
             e.target.value = ''; 
         };
         reader.readAsText(file);
+    });
+
+    // ========= AI 拍照辨識核心功能 =========
+    document.getElementById('camera-input').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const loadingOverlay = document.getElementById('ocr-loading');
+        const statusText = document.getElementById('ocr-status');
+        
+        loadingOverlay.style.display = 'flex';
+        statusText.innerText = '讀取相片中...';
+
+        Tesseract.recognize(
+            file,
+            'eng', // 血壓計通常顯示標準英文數字
+            {
+                logger: m => {
+                    if (m.status === 'recognizing text') {
+                        statusText.innerText = `AI 辨識中... ${Math.round(m.progress * 100)}%`;
+                    }
+                }
+            }
+        ).then(({ data: { text } }) => {
+            loadingOverlay.style.display = 'none';
+            
+            // 使用正規表達式抓取所有連續的 2~3 位數字
+            // (血壓與心率通常都是 2 到 3 位數)
+            const numbers = text.match(/\b\d{2,3}\b/g);
+
+            if (numbers && numbers.length >= 3) {
+                // 通常血壓計由上到下排版：收縮壓(0) -> 舒張壓(1) -> 心率(2)
+                document.getElementById('sys').value = numbers[0];
+                document.getElementById('dia').value = numbers[1];
+                document.getElementById('hr').value = numbers[2];
+                
+                alert('✨ 辨識完成！\n\n已為您填入數值，請務必與血壓計「比對確認無誤」後，再點擊「儲存本時段」。');
+            } else {
+                alert('⚠️ 無法清晰辨識出三組數字，這可能是因為反光或角度問題。\n請重新拍攝，或直接手動輸入。\n\n(系統看見的內容：' + text.trim() + ')');
+            }
+        }).catch(err => {
+            loadingOverlay.style.display = 'none';
+            alert('❌ 辨識過程發生錯誤，請檢查網路連線後重試。');
+            console.error(err);
+        });
+
+        // 清空 input，允許重複拍同一張照片
+        e.target.value = '';
     });
 
     function editRecord(date, period) {

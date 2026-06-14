@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bp-app-v6.2'; // 升級為 v6.2 強制套用鐵灰色與 3天預設設定
+const CACHE_NAME = 'bp-app-v6.3'; // 關鍵大更新 V6.3 AI視覺辨識版
 const urlsToCache = [
   './index.html',
   './manifest.json',
