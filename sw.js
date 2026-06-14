@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bp-app-v6.3'; // 關鍵大更新 V6.3 AI視覺辨識版
+const CACHE_NAME = 'bp-app-v6.4'; // 升級為 v6.4 AI極速精準版
 const urlsToCache = [
   './index.html',
   './manifest.json',
