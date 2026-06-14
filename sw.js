@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bp-app-v6.4'; // 升級為 v6.4 AI極速精準版
+const CACHE_NAME = 'bp-app-v6.2.1'; // 強制降版更新，抹除 V6.4 記憶
 const urlsToCache = [
   './index.html',
   './manifest.json',

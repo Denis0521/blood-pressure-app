@@ -10,8 +10,6 @@
     <link rel="apple-touch-icon" href="icon.svg">
     <meta name="theme-color" content="#eaf1f0">
     
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-
     <style>
         /* 佈景主題變數 */
         :root, body.theme-light, body.theme-light-blue, body.theme-light-orange, body.theme-metal, body.theme-light-purple, body.theme-iron-gray {
@@ -30,6 +28,7 @@
             --shadow-dark: rgba(0, 0, 0, 0.6); --shadow-light: rgba(255, 255, 255, 0.05); --inset-shadow: rgba(0, 0, 0, 0.4);
         }
 
+        /* 灰黑色 */
         body.theme-metal {
             --primary-color: #9e9e9e; --primary-gradient: linear-gradient(135deg, #757575, #424242);
             --bg-color: #212121; --card-bg: #303030; --border-color: #424242;
@@ -38,6 +37,7 @@
             --shadow-dark: rgba(0, 0, 0, 0.6); --shadow-light: rgba(255, 255, 255, 0.05); --inset-shadow: rgba(0, 0, 0, 0.4);
         }
 
+        /* 鐵灰色 (金融質感) */
         body.theme-iron-gray {
             --primary-color: #58a6ff; --primary-gradient: linear-gradient(135deg, #58a6ff, #3178c6);
             --bg-color: #1a1c23; --card-bg: #262932; --border-color: #3b404d;
@@ -84,7 +84,6 @@
         .header-btn { flex: none; min-width: auto; padding: 10px 20px; background: var(--card-bg); color: var(--primary-color); border: 1px solid var(--border-color); box-shadow: 0 6px 12px var(--shadow-dark), inset 0 2px 2px var(--shadow-light); }
         .btn-primary { background: var(--primary-gradient); color: white; box-shadow: 0 6px 12px var(--shadow-dark), inset 0 2px 2px var(--shadow-light); }
         .btn-outline { background: var(--card-bg); color: var(--primary-color); border: 1px solid var(--primary-color); box-shadow: 0 6px 12px var(--shadow-dark), inset 0 2px 2px var(--shadow-light); }
-        .btn-dashed { background: transparent; color: var(--primary-color); border: 2px dashed var(--primary-color); margin-bottom: 15px; width: 100%; }
         .btn-backup { background: linear-gradient(135deg, #ffb74d, #f57c00); color: white; box-shadow: 0 6px 12px var(--shadow-dark), inset 0 2px 2px var(--shadow-light); }
         button:active { transform: translateY(4px); box-shadow: inset 0 2px 4px var(--inset-shadow); }
 
@@ -108,14 +107,9 @@
         .theme-select { width: 100%; padding: 12px; border-radius: 10px; margin-bottom: 20px; background: var(--input-bg); color: var(--text-dark); border: none; font-size: 16px; box-shadow: inset 0 4px 6px var(--inset-shadow); }
         .version-text { text-align: center; margin-top: 20px; font-size: 13px; color: var(--text-gray); font-weight: bold; }
 
-        /* AI 辨識中的載入畫面 */
-        #ocr-loading { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; color: white; justify-content: center; align-items: center; flex-direction: column; }
-        .spinner { border: 5px solid rgba(255,255,255,0.2); border-top: 5px solid #58a6ff; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin-bottom: 20px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .loading-text { font-size: 18px; font-weight: bold; letter-spacing: 1px; }
-
         .print-only { display: none; }
 
+        /* 原生列印排版 */
         @media print {
             .no-print, .header-container, #input-card, .btn-group, .hint-text { display: none !important; }
             .print-only { display: block !important; text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 20px; color: black; }
@@ -130,14 +124,6 @@
 </head>
 <body>
 
-    <div id="ocr-loading">
-        <div class="spinner"></div>
-        <div class="loading-text" id="ocr-status">處理影像中...</div>
-    </div>
-
-    <input type="file" id="camera-input" accept="image/*" capture="environment" style="display: none;">
-    <canvas id="image-canvas" style="display:none;"></canvas>
-
     <div class="header-container no-print">
         <h2>血壓記錄</h2>
         <button class="header-btn" onclick="openTools()">進階</button>
@@ -149,9 +135,6 @@
 
     <div class="card no-print" id="input-card">
         <div class="card-title">新增 / 修改記錄</div>
-        
-        <button class="btn-dashed" onclick="document.getElementById('camera-input').click()">📷 拍照極速辨識 (V6.4)</button>
-
         <div class="input-group">
             <input type="number" id="sys" placeholder="收縮壓">
             <input type="number" id="dia" placeholder="舒張壓">
@@ -221,7 +204,7 @@
                 <button class="btn-outline" onclick="document.getElementById('import-file').click(); closeTools();">📂 匯入舊記錄檔案</button>
             </div>
             
-            <div class="version-text">目前版本：V6.4 (AI 極速精準版)</div>
+            <div class="version-text">目前版本：V6.2 (回歸穩定版)</div>
         </div>
     </div>
 
@@ -263,7 +246,8 @@
         const info = getCurrentInfo();
         document.getElementById('current-time-display').innerText = `今日：${info.date} 時段：${info.periodText}`;
         
-        const pastDate = new Date(); pastDate.setDate(pastDate.getDate() - 89); 
+        // 嚴格鎖定：每次重新啟動預設只顯示最近 3 天 (包含今天，往前推 2 天)
+        const pastDate = new Date(); pastDate.setDate(pastDate.getDate() - 2); 
         document.getElementById('start-date').value = pastDate.toISOString().split('T')[0];
         document.getElementById('end-date').value = info.date;
         
@@ -311,83 +295,6 @@
         reader.readAsText(file);
     });
 
-    // ========= V6.4: AI 影像壓縮與純數字精準辨識 =========
-    document.getElementById('camera-input').addEventListener('change', function(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        const loadingOverlay = document.getElementById('ocr-loading');
-        const statusText = document.getElementById('ocr-status');
-        loadingOverlay.style.display = 'flex';
-        statusText.innerText = '處理與壓縮影像中...';
-
-        // 1. 讀取並壓縮影像
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            const img = new Image();
-            img.onload = function() {
-                const canvas = document.getElementById('image-canvas');
-                const ctx = canvas.getContext('2d');
-                
-                // 設定最大寬度為 800px 以大幅提升辨識速度
-                const MAX_WIDTH = 800;
-                let width = img.width;
-                let height = img.height;
-                if (width > MAX_WIDTH) {
-                    height = Math.round((height * MAX_WIDTH) / width);
-                    width = MAX_WIDTH;
-                }
-                canvas.width = width;
-                canvas.height = height;
-                
-                // 黑白與對比度強化 (讓 LCD 數字更清晰)
-                ctx.filter = 'grayscale(100%) contrast(150%)';
-                ctx.drawImage(img, 0, 0, width, height);
-
-                // 2. 將處理後的圖片轉交給 AI 引擎
-                const processedDataUrl = canvas.toDataURL('image/jpeg');
-                
-                statusText.innerText = '啟動 AI 辨識中...';
-                
-                Tesseract.recognize(
-                    processedDataUrl,
-                    'eng', // 使用英文語系
-                    {
-                        logger: m => {
-                            if (m.status === 'recognizing text') {
-                                statusText.innerText = `AI 極速辨識中... ${Math.round(m.progress * 100)}%`;
-                            }
-                        },
-                        // 關鍵優化：強制白名單，只准辨識數字，避免亂碼！
-                        tessedit_char_whitelist: '0123456789'
-                    }
-                ).then(({ data: { text } }) => {
-                    loadingOverlay.style.display = 'none';
-                    
-                    // 抓取所有 2~3 位數的數字
-                    const numbers = text.match(/\b\d{2,3}\b/g);
-
-                    if (numbers && numbers.length >= 3) {
-                        document.getElementById('sys').value = numbers[0];
-                        document.getElementById('dia').value = numbers[1];
-                        document.getElementById('hr').value = numbers[2];
-                        alert('✨ 辨識完成！速度與精準度已提升。\n\n請與血壓計「比對確認無誤」後，點擊「儲存本時段」。');
-                    } else {
-                        alert('⚠️ 無法找到三組完整數字。\n\n建議：拍攝時請盡量讓「三個大數字」塞滿畫面中間，避免反光，並避開旁邊的日期小字。');
-                    }
-                }).catch(err => {
-                    loadingOverlay.style.display = 'none';
-                    alert('❌ 辨識過程發生錯誤，請重試。');
-                    console.error(err);
-                });
-            };
-            img.src = event.target.result;
-        };
-        reader.readAsDataURL(file);
-        
-        e.target.value = ''; // 允許重複拍照
-    });
-
     function editRecord(date, period) {
         editDate = date; editPeriod = period;
         const record = appData[date]?.[period] || {};
@@ -408,6 +315,7 @@
             let date = currentDate.toISOString().split('T')[0];
             const data = appData[date] || { morning: {}, evening: {} }, m = data.morning || {}, e = data.evening || {};
             
+            // 無論有沒有資料都會顯示，讓您方便點擊「補填」
             const mAction = (m.sys || m.dia || m.hr) ? '修改' : '補填';
             const eAction = (e.sys || e.dia || e.hr) ? '修改' : '補填';
             
