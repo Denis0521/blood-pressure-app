@@ -4,8 +4,8 @@
     "description": "個人專屬的早晚血壓與心率記錄工具 (V8.0)",
     "start_url": "./index.html",
     "display": "standalone",
-    "background_color": "#eaf1f0",
-    "theme_color": "#148b7f",
+    "background_color": "#e8f0ee",
+    "theme_color": "#1a8c7d",
     "icons": [
         {
             "src": "icon.svg",
