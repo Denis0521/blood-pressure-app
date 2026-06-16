@@ -4,40 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>血壓記錄</title>
-    
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="apple-touch-icon" href="icon.svg">
     <meta name="theme-color" content="#eaf1f0">
-    
     <style>
         /* 佈景主題變數 */
-        :root, body.theme-light, body.theme-light-blue, body.theme-light-orange, body.theme-metal, body.theme-light-purple, body.theme-iron-gray {
-            --primary-color: #148b7f; --primary-gradient: linear-gradient(135deg, #17a294, #12796e);
+        :root {
+            --primary-color: #148b7f;
+            --primary-gradient: linear-gradient(135deg, #17a294, #12796e);
             --bg-color: #eaf1f0; --card-bg: #ffffff; --border-color: #d1e3e0;
             --text-dark: #2c3e50; --text-gray: #7f8c8d; --input-bg: #f9fdfc;
             --table-header: #f2fafa; --tr-even: #fafdfc;
             --shadow-dark: rgba(0, 0, 0, 0.2); --shadow-light: rgba(255, 255, 255, 0.7); --inset-shadow: rgba(0, 0, 0, 0.15);
         }
-
-        body.theme-dark, body.theme-dark-blue {
+        body.theme-dark {
             --primary-color: #26a69a; --primary-gradient: linear-gradient(135deg, #2dbdb0, #1f8c82);
             --bg-color: #121212; --card-bg: #1e1e1e; --border-color: #333333;
             --text-dark: #e0e0e0; --text-gray: #aaaaaa; --input-bg: #181818;
             --table-header: #2c2c2c; --tr-even: #252525;
             --shadow-dark: rgba(0, 0, 0, 0.6); --shadow-light: rgba(255, 255, 255, 0.05); --inset-shadow: rgba(0, 0, 0, 0.4);
         }
-
-        /* 灰黑色 */
-        body.theme-metal {
-            --primary-color: #9e9e9e; --primary-gradient: linear-gradient(135deg, #757575, #424242);
-            --bg-color: #212121; --card-bg: #303030; --border-color: #424242;
-            --text-dark: #f5f5f5; --text-gray: #9e9e9e; --input-bg: #2a2a2a;
-            --table-header: #424242; --tr-even: #252525;
-            --shadow-dark: rgba(0, 0, 0, 0.6); --shadow-light: rgba(255, 255, 255, 0.05); --inset-shadow: rgba(0, 0, 0, 0.4);
-        }
-
-        /* 鐵灰色 (金融質感) */
+        /* 灰黑色 已移除 */
         body.theme-iron-gray {
             --primary-color: #58a6ff; --primary-gradient: linear-gradient(135deg, #58a6ff, #3178c6);
             --bg-color: #1a1c23; --card-bg: #262932; --border-color: #3b404d;
@@ -45,113 +33,130 @@
             --table-header: #2e323d; --tr-even: #1d1f27;
             --shadow-dark: rgba(0, 0, 0, 0.5); --shadow-light: rgba(255, 255, 255, 0.05); --inset-shadow: rgba(0, 0, 0, 0.3);
         }
-
         body.theme-light-purple {
             --primary-color: #ab47bc; --primary-gradient: linear-gradient(135deg, #ba68c8, #8e24aa);
             --bg-color: #f3e5f5; --card-bg: #ffffff; --border-color: #e1bee7;
             --text-dark: #4a148c; --text-gray: #8e24aa; --input-bg: #fdfbfd;
             --table-header: #f3e5f5; --tr-even: #faf8fb;
         }
-        
         body.theme-dark-blue {
             --primary-color: #4da8da; --primary-gradient: linear-gradient(135deg, #5ebdf0, #3c8ebd);
-            --bg-color: #0b192c; --card-bg: #1a2a40; --border-color: #2c4260; --text-dark: #e2e8f0; --text-gray: #94a3b8; --input-bg: #121e30; --table-header: #1e293b; --tr-even: #152238;
+            --bg-color: #0b192c; --card-bg: #1a2a40; --border-color: #2c4260;
+            --text-dark: #e2e8f0; --text-gray: #94a3b8; --input-bg: #121e30;
+            --table-header: #1e293b; --tr-even: #152238;
         }
         body.theme-light-blue {
             --primary-color: #0288d1; --primary-gradient: linear-gradient(135deg, #039be5, #0277bd);
-            --bg-color: #e1f5fe; --card-bg: #ffffff; --border-color: #b3e5fc; --text-dark: #01579b; --text-gray: #0288d1; --input-bg: #e8f4fc; --table-header: #e1f5fe; --tr-even: #f1f9ff;
+            --bg-color: #e1f5fe; --card-bg: #ffffff; --border-color: #b3e5fc;
+            --text-dark: #01579b; --text-gray: #0288d1; --input-bg: #e8f4fc;
+            --table-header: #e1f5fe; --tr-even: #f1f9ff;
         }
         body.theme-light-orange {
             --primary-color: #f57c00; --primary-gradient: linear-gradient(135deg, #fb8c00, #ef6c00);
-            --bg-color: #fff3e0; --card-bg: #ffffff; --border-color: #ffe0b2; --text-dark: #e65100; --text-gray: #f57c00; --input-bg: #fdf5ea; --table-header: #ffe0b2; --tr-even: #fff8f0;
+            --bg-color: #fff3e0; --card-bg: #ffffff; --border-color: #ffe0b2;
+            --text-dark: #e65100; --text-gray: #f57c00; --input-bg: #fdf5ea;
+            --table-header: #ffe0b2; --tr-even: #fff8f0;
         }
-
-        body { font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang TC', sans-serif; background-color: var(--bg-color); color: var(--text-dark); margin: 0; padding: 16px; transition: 0.3s ease; }
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang TC', sans-serif; background-color: var(--bg-color); color: var(--text-dark); margin: 0; padding: 16px; transition: background-color 0.3s ease, color 0.3s ease; }
         .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         h2 { margin: 0; font-size: 26px; font-weight: bold; }
         .subtitle { color: var(--text-gray); margin-bottom: 20px; font-size: 16px; font-weight: bold; }
-
         .card { background: var(--card-bg); border-radius: 16px; padding: 20px; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); border: 1px solid var(--border-color); }
         .card-title { font-size: 18px; font-weight: 800; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 2px solid var(--border-color); }
-
         .input-group { display: flex; gap: 12px; margin-bottom: 20px; }
         .input-group input { flex: 1; width: 100%; padding: 14px 8px; border-radius: 10px; font-size: 18px; text-align: center; background: var(--input-bg); color: var(--text-dark); border: none; box-shadow: inset 0 4px 6px var(--inset-shadow), 0 1px 1px var(--shadow-light); }
         .input-group input:focus { outline: none; box-shadow: inset 0 4px 6px var(--inset-shadow), 0 0 0 2px var(--primary-color); }
-
         .btn-group { display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
         button { flex: 1; min-width: 120px; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; border: none; transition: 0.1s; }
-        
         .header-btn { flex: none; min-width: auto; padding: 10px 20px; background: var(--card-bg); color: var(--primary-color); border: 1px solid var(--border-color); box-shadow: 0 6px 12px var(--shadow-dark), inset 0 2px 2px var(--shadow-light); }
         .btn-primary { background: var(--primary-gradient); color: white; box-shadow: 0 6px 12px var(--shadow-dark), inset 0 2px 2px var(--shadow-light); }
         .btn-outline { background: var(--card-bg); color: var(--primary-color); border: 1px solid var(--primary-color); box-shadow: 0 6px 12px var(--shadow-dark), inset 0 2px 2px var(--shadow-light); }
+        .btn-danger { background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; box-shadow: 0 6px 12px var(--shadow-dark), inset 0 2px 2px var(--shadow-light); }
         .btn-backup { background: linear-gradient(135deg, #ffb74d, #f57c00); color: white; box-shadow: 0 6px 12px var(--shadow-dark), inset 0 2px 2px var(--shadow-light); }
         button:active { transform: translateY(4px); box-shadow: inset 0 2px 4px var(--inset-shadow); }
-
         .hint-text { color: var(--primary-color); font-size: 14px; margin-bottom: 12px; font-weight: bold; }
-
-        .table-responsive { width: 100%; overflow-x: auto; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); border: 1px solid var(--border-color); }
-        table { width: 100%; min-width: 650px; border-collapse: collapse; text-align: center; font-size: 15px; background: var(--card-bg); color: var(--text-dark); }
         
-        th, td { padding: 10px 4px; border: 1px solid var(--border-color); white-space: nowrap; }
+        /* 表格排版優化 */
+        .table-responsive { width: 100%; overflow-x: auto; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); border: 1px solid var(--border-color); }
+        table { width: 100%; min-width: 550px; border-collapse: collapse; text-align: center; font-size: 15px; background: var(--card-bg); color: var(--text-dark); table-layout: fixed; }
+        th, td { padding: 10px 4px; border: 1px solid var(--border-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         th { background-color: var(--table-header); }
         tr:nth-child(even) { background-color: var(--tr-even); }
-        .action-link { color: #d35400; font-weight: bold; cursor: pointer; text-decoration: underline; }
-
+        
+        /* 欄位寬度控制 */
+        .col-date { width: 110px; } /* 日期欄位加寬確保完整顯示 */
+        .col-action { width: 60px; } /* 修改按鈕欄位 */
+        .col-data { width: auto; }  /* 數據欄位平分剩餘空間 */
+        
+        .edit-btn { background: none; border: none; color: var(--primary-color); font-size: 20px; cursor: pointer; padding: 0; min-width: auto; flex: none; font-weight: bold; }
+        .edit-btn:active { transform: scale(0.9); }
+        
         .align-bottom { vertical-align: bottom !important; padding-bottom: 8px !important; }
         .group-header { padding-top: 8px !important; padding-bottom: 4px !important; }
         .sub-header th { padding-top: 4px !important; padding-bottom: 8px !important; }
-
+        
+        /* Modal 樣式 */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(3px); }
         .modal-content { background: var(--card-bg); color: var(--text-dark); padding: 24px; border-radius: 16px; width: 90%; max-width: 350px; position: relative; }
         .modal-close { float: right; font-size: 26px; font-weight: bold; color: var(--text-gray); cursor: pointer; }
         .theme-select { width: 100%; padding: 12px; border-radius: 10px; margin-bottom: 20px; background: var(--input-bg); color: var(--text-dark); border: none; font-size: 16px; box-shadow: inset 0 4px 6px var(--inset-shadow); }
         .version-text { text-align: center; margin-top: 20px; font-size: 13px; color: var(--text-gray); font-weight: bold; }
-
+        
+        /* 早晚選擇對話框按鈕 */
+        .period-btn-group { display: flex; gap: 10px; margin-top: 20px; }
+        .period-btn-group button { flex: 1; padding: 12px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; border: none; }
+        .btn-morning { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: white; }
+        .btn-evening { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; }
+        .period-btn-group button:active { transform: translateY(2px); }
+        
+        .toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; align-items: center; gap: 10px; pointer-events: none; }
+        .toast { background: var(--text-dark); color: var(--bg-color); padding: 14px 24px; border-radius: 30px; font-size: 15px; font-weight: bold; box-shadow: 0 8px 20px rgba(0,0,0,0.3); opacity: 0; transform: translateY(20px); animation: toastIn 0.3s forwards, toastOut 0.3s 2.5s forwards; pointer-events: auto; text-align: center; max-width: 80vw; }
+        .toast.error { background: #d32f2f; color: white; }
+        .toast.warning { background: #f57c00; color: white; }
+        @keyframes toastIn { to { opacity: 1; transform: translateY(0); } }
+        @keyframes toastOut { to { opacity: 0; transform: translateY(-20px); } }
         .print-only { display: none; }
-
-        /* 原生列印排版 */
+        
         @media print {
-            .no-print, .header-container, #input-card, .btn-group, .hint-text { display: none !important; }
+            .no-print, .header-container, #input-card, .btn-group, .hint-text, .toast-container, .col-action { display: none !important; }
             .print-only { display: block !important; text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 20px; color: black; }
             body { background: white !important; color: black !important; margin: 0; padding: 0; }
             .card { border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
             .table-responsive { overflow: visible !important; border: none !important; box-shadow: none !important; }
-            table { width: 100% !important; min-width: 100% !important; border-collapse: collapse !important; font-size: 14px !important; color: black !important; }
-            th, td { border: 1px solid black !important; padding: 8px 4px !important; color: black !important; background: transparent !important; white-space: normal !important; }
-            .action-col { display: none !important; }
+            table { width: 100% !important; min-width: 100% !important; border-collapse: collapse !important; font-size: 14px !important; color: black !important; table-layout: auto !important; }
+            th, td { border: 1px solid black !important; padding: 8px 4px !important; color: black !important; background: transparent !important; white-space: normal !important; overflow: visible !important; text-overflow: initial !important; }
+            .col-date { width: auto !important; }
+            .col-data { width: 14.28% !important; }
         }
     </style>
 </head>
 <body>
-
+    <div class="toast-container" id="toast-container"></div>
     <div class="header-container no-print">
         <h2>血壓記錄</h2>
         <button class="header-btn" onclick="openTools()">進階</button>
     </div>
-    
     <div class="subtitle no-print" id="current-time-display">今日：載入中... 時段：載入中...</div>
-
     <input type="file" id="import-file" accept=".json" style="display: none;">
 
     <div class="card no-print" id="input-card">
-        <div class="card-title">新增 / 修改記錄</div>
+        <div class="card-title" id="input-card-title">新增 / 修改記錄</div>
         <div class="input-group">
-            <input type="number" id="sys" placeholder="收縮壓">
-            <input type="number" id="dia" placeholder="舒張壓">
-            <input type="number" id="hr" placeholder="心率">
+            <input type="number" id="sys" placeholder="收縮壓" inputmode="numeric">
+            <input type="number" id="dia" placeholder="舒張壓" inputmode="numeric">
+            <input type="number" id="hr" placeholder="心率" inputmode="numeric">
         </div>
         <div class="btn-group">
             <button class="btn-primary" onclick="saveRecord()">儲存本時段</button>
             <button class="btn-outline" onclick="clearInputs()">取消修改</button>
+            <button class="btn-danger" id="btn-delete" onclick="deleteCurrentRecord()" style="display: none;">刪除此筆</button>
         </div>
     </div>
 
     <div class="card" id="print-area">
         <div class="card-title no-print">血壓記錄查詢與輸出</div>
-        
         <div class="print-only" id="print-title">血壓記錄表</div>
-
-        <div class="hint-text no-print">💡 提示：若需查詢更多記錄，請更改下方日期範圍即可。</div>
+        <div class="hint-text no-print">💡 提示：點擊右側「✏️」可修改或補填早晚記錄。</div>
         <div class="input-group no-print">
             <input type="date" id="start-date">
             <input type="date" id="end-date">
@@ -160,20 +165,18 @@
             <button class="btn-outline" onclick="renderTable()">開始查詢</button>
             <button class="btn-primary" onclick="printNative()">🖨️ 產出 PDF</button>
         </div>
-        
         <div class="table-responsive">
             <table id="bp-table">
                 <thead>
                     <tr>
-                        <th rowspan="2" class="align-bottom">日期</th>
+                        <th rowspan="2" class="align-bottom col-date">日期</th>
                         <th colspan="3" class="group-header">早上記錄</th>
-                        <th rowspan="2" class="action-col align-bottom">改早</th>
                         <th colspan="3" class="group-header">晚上記錄</th>
-                        <th rowspan="2" class="action-col align-bottom">改晚</th>
+                        <th rowspan="2" class="align-bottom col-action no-print">修改</th>
                     </tr>
                     <tr class="sub-header">
-                        <th>收縮壓</th><th>舒張壓</th><th>心率</th>
-                        <th>收縮壓</th><th>舒張壓</th><th>心率</th>
+                        <th class="col-data">收縮壓</th><th class="col-data">舒張壓</th><th class="col-data">心率</th>
+                        <th class="col-data">收縮壓</th><th class="col-data">舒張壓</th><th class="col-data">心率</th>
                     </tr>
                 </thead>
                 <tbody id="record-table-body"></tbody>
@@ -181,173 +184,223 @@
         </div>
     </div>
 
+    <!-- 進階工具 Modal -->
     <div id="toolsModal" class="modal-overlay no-print">
         <div class="modal-content">
             <span class="modal-close" onclick="closeTools()">&times;</span>
-            
             <div class="card-title" style="margin-top: 5px;">🎨 佈景主題</div>
             <select id="theme-selector" class="theme-select" onchange="changeTheme()">
                 <option value="light">淺色 (預設)</option>
                 <option value="dark">深色</option>
                 <option value="iron-gray">鐵灰色</option>
-                <option value="metal">灰黑色</option>
                 <option value="light-purple">淺紫色</option>
                 <option value="dark-blue">深藍色</option>
                 <option value="light-blue">淺藍色</option>
                 <option value="light-orange">淺橙色</option>
             </select>
-
             <div class="card-title" style="margin-top: 5px;">💾 資料備份與還原</div>
             <p style="font-size: 14px; color: var(--text-gray); margin-bottom: 15px; font-weight: bold;">更換手機前，請先匯出備份檔案。</p>
             <div class="btn-group" style="flex-direction: column; gap: 12px;">
                 <button class="btn-backup" onclick="exportBackup()">📥 匯出最新備份 (.json)</button>
                 <button class="btn-outline" onclick="document.getElementById('import-file').click(); closeTools();">📂 匯入舊記錄檔案</button>
             </div>
-            
-            <div class="version-text">目前版本：V6.2 (回歸穩定版)</div>
+            <div class="version-text">目前版本：V8.0 (極簡體驗版)</div>
         </div>
     </div>
 
-<script>
-    let appData = JSON.parse(localStorage.getItem('bpRecords')) || {};
-    let editDate = null, editPeriod = null;
+    <!-- 早晚選擇 Modal -->
+    <div id="periodModal" class="modal-overlay no-print">
+        <div class="modal-content" style="text-align: center;">
+            <span class="modal-close" onclick="closePeriodModal()">&times;</span>
+            <div class="card-title" id="period-modal-title">選擇修改時段</div>
+            <p style="color: var(--text-gray); font-size: 14px; margin-bottom: 10px;">請選擇您要修改的時段：</p>
+            <div class="period-btn-group">
+                <button class="btn-morning" onclick="confirmEdit('morning')">☀️ 早上</button>
+                <button class="btn-evening" onclick="confirmEdit('evening')">🌙 晚上</button>
+            </div>
+        </div>
+    </div>
 
-    function updateThemeMeta(theme) {
-        const themeColors = { 
-            'light': '#eaf1f0', 'dark': '#121212', 'metal': '#212121', 'iron-gray': '#1a1c23', 
-            'light-purple': '#f3e5f5', 'dark-blue': '#0b192c', 'light-blue': '#e1f5fe', 'light-orange': '#fff3e0' 
-        };
-        document.querySelector('meta[name="theme-color"]').setAttribute('content', themeColors[theme] || '#eaf1f0');
-    }
+    <script>
+        let appData = JSON.parse(localStorage.getItem('bpRecords')) || {};
+        let editDate = null, editPeriod = null;
+        let pendingEditDate = null; // 暫存準備修改的日期
 
-    function loadTheme() {
-        const savedTheme = localStorage.getItem('bpTheme') || 'light';
-        document.body.className = `theme-${savedTheme}`;
-        document.getElementById('theme-selector').value = savedTheme;
-        updateThemeMeta(savedTheme);
-    }
-
-    function changeTheme() {
-        const theme = document.getElementById('theme-selector').value;
-        document.body.className = `theme-${theme}`;
-        localStorage.setItem('bpTheme', theme);
-        updateThemeMeta(theme);
-    }
-
-    function getCurrentInfo() {
-        const now = new Date(), offset = now.getTimezoneOffset() * 60000;
-        const localISOTime = (new Date(now - offset)).toISOString().split('T')[0];
-        const period = now.getHours() < 12 ? 'morning' : 'evening';
-        return { date: localISOTime, period, periodText: period === 'morning' ? '早上' : '晚上' };
-    }
-
-    function init() {
-        loadTheme();
-        const info = getCurrentInfo();
-        document.getElementById('current-time-display').innerText = `今日：${info.date} 時段：${info.periodText}`;
-        
-        // 嚴格鎖定：每次重新啟動預設只顯示最近 3 天 (包含今天，往前推 2 天)
-        const pastDate = new Date(); pastDate.setDate(pastDate.getDate() - 2); 
-        document.getElementById('start-date').value = pastDate.toISOString().split('T')[0];
-        document.getElementById('end-date').value = info.date;
-        
-        renderTable();
-    }
-
-    function clearInputs() {
-        document.getElementById('sys').value = ''; document.getElementById('dia').value = ''; document.getElementById('hr').value = '';
-        editDate = null; editPeriod = null;
-    }
-
-    function saveRecord() {
-        const sys = document.getElementById('sys').value, dia = document.getElementById('dia').value, hr = document.getElementById('hr').value;
-        if (!sys && !dia && !hr) { alert('請至少輸入一項數值！'); return; }
-        const info = getCurrentInfo(), targetDate = editDate || info.date, targetPeriod = editPeriod || info.period;
-        if (!appData[targetDate]) appData[targetDate] = { morning: {}, evening: {} };
-        appData[targetDate][targetPeriod] = { sys, dia, hr };
-        localStorage.setItem('bpRecords', JSON.stringify(appData));
-        alert(`${targetDate} ${targetPeriod === 'morning' ? '早上' : '晚上'} 記錄已儲存！`);
-        clearInputs(); renderTable();
-    }
-
-    function openTools() { document.getElementById('toolsModal').style.display = 'flex'; }
-    function closeTools() { document.getElementById('toolsModal').style.display = 'none'; }
-
-    function exportBackup() {
-        if (Object.keys(appData).length === 0) { alert('尚無資料可供備份。'); return; }
-        const url = URL.createObjectURL(new Blob([JSON.stringify(appData, null, 2)], { type: 'application/json' }));
-        const a = document.createElement('a'); a.href = url; a.download = `血壓記錄_最新備份.json`;
-        document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
-        alert('備份已下載至您的手機「下載」資料夾！\n檔名為：血壓記錄_最新備份.json'); closeTools();
-    }
-
-    document.getElementById('import-file').addEventListener('change', function(e) {
-        const file = e.target.files[0]; if (!file) return;
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            try {
-                appData = { ...appData, ...JSON.parse(event.target.result) };
-                localStorage.setItem('bpRecords', JSON.stringify(appData));
-                alert('舊記錄已完美還原！'); renderTable();
-            } catch (error) { alert('檔案讀取失敗，請確認是否選取了正確的 JSON 備份檔。'); }
-            e.target.value = ''; 
-        };
-        reader.readAsText(file);
-    });
-
-    function editRecord(date, period) {
-        editDate = date; editPeriod = period;
-        const record = appData[date]?.[period] || {};
-        document.getElementById('sys').value = record.sys || '';
-        document.getElementById('dia').value = record.dia || '';
-        document.getElementById('hr').value = record.hr || '';
-        alert(`已鎖定：${date} (${period === 'morning' ? '早上' : '晚上'})\n請修改數值後點擊「儲存本時段」。`);
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function renderTable() {
-        const tbody = document.getElementById('record-table-body'); tbody.innerHTML = '';
-        const startDateStr = document.getElementById('start-date').value, endDateStr = document.getElementById('end-date').value;
-        if(!startDateStr || !endDateStr) return;
-        let currentDate = new Date(startDateStr), endDate = new Date(endDateStr);
-        
-        while (currentDate <= endDate) { 
-            let date = currentDate.toISOString().split('T')[0];
-            const data = appData[date] || { morning: {}, evening: {} }, m = data.morning || {}, e = data.evening || {};
-            
-            // 無論有沒有資料都會顯示，讓您方便點擊「補填」
-            const mAction = (m.sys || m.dia || m.hr) ? '修改' : '補填';
-            const eAction = (e.sys || e.dia || e.hr) ? '修改' : '補填';
-            
-            const tr = document.createElement('tr');
-            tr.innerHTML = `<td>${date}</td>
-                <td>${m.sys || ''}</td><td>${m.dia || ''}</td><td>${m.hr || ''}</td>
-                <td class="action-col"><span class="action-link" onclick="editRecord('${date}', 'morning')">${mAction}</span></td>
-                <td>${e.sys || ''}</td><td>${e.dia || ''}</td><td>${e.hr || ''}</td>
-                <td class="action-col"><span class="action-link" onclick="editRecord('${date}', 'evening')">${eAction}</span></td>`;
-            tbody.appendChild(tr);
-            
-            currentDate.setDate(currentDate.getDate() + 1); 
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            setTimeout(() => { if (container.contains(toast)) container.removeChild(toast); }, 3000);
         }
-    }
 
-    function printNative() {
-        const startDateStr = document.getElementById('start-date').value, endDateStr = document.getElementById('end-date').value;
-        if(!startDateStr || !endDateStr) { alert('請先選擇匯出範圍'); return; }
-        
-        document.getElementById('print-title').innerText = `血壓記錄表\n(${startDateStr} 至 ${endDateStr})`;
-        window.print();
-    }
+        const themeColors = { 'light': '#eaf1f0', 'dark': '#121212', 'iron-gray': '#1a1c23', 'light-purple': '#f3e5f5', 'dark-blue': '#0b192c', 'light-blue': '#e1f5fe', 'light-orange': '#fff3e0' };
+        function updateThemeMeta(theme) { document.querySelector('meta[name="theme-color"]').setAttribute('content', themeColors[theme] || '#eaf1f0'); }
+        function loadTheme() {
+            let savedTheme = localStorage.getItem('bpTheme') || 'light';
+            if (savedTheme === 'metal') savedTheme = 'light';
+            document.body.className = `theme-${savedTheme}`;
+            document.getElementById('theme-selector').value = savedTheme;
+            updateThemeMeta(savedTheme);
+        }
+        function changeTheme() {
+            const theme = document.getElementById('theme-selector').value;
+            document.body.className = `theme-${theme}`;
+            localStorage.setItem('bpTheme', theme);
+            updateThemeMeta(theme);
+        }
 
-    init();
+        function formatDate(date) { const y = date.getFullYear(); const m = String(date.getMonth() + 1).padStart(2, '0'); const d = String(date.getDate()).padStart(2, '0'); return `${y}-${m}-${d}`; }
+        function getCurrentInfo() { const now = new Date(); const date = formatDate(now); const period = now.getHours() < 12 ? 'morning' : 'evening'; return { date, period, periodText: period === 'morning' ? '早上' : '晚上' }; }
 
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./sw.js').then(reg => {
-                console.log('SW 註冊成功');
-            });
+        function init() {
+            loadTheme();
+            const info = getCurrentInfo();
+            document.getElementById('current-time-display').innerText = `今日：${info.date} 時段：${info.periodText}`;
+            const pastDate = new Date(); pastDate.setDate(pastDate.getDate() - 2);
+            document.getElementById('start-date').value = formatDate(pastDate);
+            document.getElementById('end-date').value = info.date;
+            renderTable();
+        }
+
+        function clearInputs() {
+            document.getElementById('sys').value = '';
+            document.getElementById('dia').value = '';
+            document.getElementById('hr').value = '';
+            editDate = null; editPeriod = null;
+            document.getElementById('input-card-title').innerText = '新增 / 修改記錄';
+            document.getElementById('btn-delete').style.display = 'none';
+        }
+
+        function saveRecord() {
+            const sys = parseInt(document.getElementById('sys').value, 10);
+            const dia = parseInt(document.getElementById('dia').value, 10);
+            const hr = parseInt(document.getElementById('hr').value, 10);
+
+            if (isNaN(sys) && isNaN(dia) && isNaN(hr)) { showToast('請至少輸入一項數值！', 'error'); return; }
+            if (!isNaN(sys) && !isNaN(dia) && sys <= dia) { showToast('錯誤：收縮壓必須大於舒張壓！', 'error'); return; }
+            if ((sys && (sys < 60 || sys > 250)) || (dia && (dia < 40 || dia > 150)) || (hr && (hr < 30 || hr > 220))) { showToast('警告：數值超出正常生理範圍，仍會儲存。', 'warning'); }
+
+            const info = getCurrentInfo();
+            const targetDate = editDate || info.date;
+            const targetPeriod = editPeriod || info.period;
+
+            if (!appData[targetDate]) appData[targetDate] = { morning: {}, evening: {} };
+            appData[targetDate][targetPeriod] = { sys: isNaN(sys) ? '' : String(sys), dia: isNaN(dia) ? '' : String(dia), hr: isNaN(hr) ? '' : String(hr) };
+            localStorage.setItem('bpRecords', JSON.stringify(appData));
+            showToast(`${targetDate} ${targetPeriod === 'morning' ? '早上' : '晚上'} 記錄已儲存！`);
+            clearInputs();
+            renderTable();
+        }
+
+        function deleteCurrentRecord() {
+            if (!editDate || !editPeriod) return;
+            if (confirm(`確定要刪除 ${editDate} 的${editPeriod === 'morning' ? '早上' : '晚上'}記錄嗎？`)) {
+                appData[editDate][editPeriod] = { sys: '', dia: '', hr: '' };
+                localStorage.setItem('bpRecords', JSON.stringify(appData));
+                showToast('記錄已刪除');
+                clearInputs();
+                renderTable();
+            }
+        }
+
+        function openTools() { document.getElementById('toolsModal').style.display = 'flex'; }
+        function closeTools() { document.getElementById('toolsModal').style.display = 'none'; }
+
+        // --- 早晚選擇對話框邏輯 ---
+        function openPeriodModal(date) {
+            pendingEditDate = date;
+            document.getElementById('period-modal-title').innerText = `選擇修改時段 (${date})`;
+            document.getElementById('periodModal').style.display = 'flex';
+        }
+        function closePeriodModal() { document.getElementById('periodModal').style.display = 'none'; }
+        function confirmEdit(period) {
+            closePeriodModal();
+            editRecord(pendingEditDate, period);
+        }
+
+        function editRecord(date, period) {
+            editDate = date; editPeriod = period;
+            const record = appData[date]?.[period] || {};
+            document.getElementById('sys').value = record.sys || '';
+            document.getElementById('dia').value = record.dia || '';
+            document.getElementById('hr').value = record.hr || '';
+            document.getElementById('input-card-title').innerText = `修改模式：${date} ${period === 'morning' ? '早上' : '晚上'}`;
+            document.getElementById('btn-delete').style.display = 'block';
+            showToast(`已鎖定：${date} (${period === 'morning' ? '早上' : '晚上'})，請修改後按儲存`, 'warning');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function exportBackup() {
+            if (Object.keys(appData).length === 0) { showToast('尚無資料可供備份', 'error'); return; }
+            const url = URL.createObjectURL(new Blob([JSON.stringify(appData, null, 2)], { type: 'application/json' }));
+            const a = document.createElement('a'); a.href = url; a.download = `血壓記錄_最新備份_${getCurrentInfo().date}.json`;
+            document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+            showToast('備份已下載至手機「下載」資料夾！'); closeTools();
+        }
+
+        document.getElementById('import-file').addEventListener('change', function(e) {
+            const file = e.target.files[0]; if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                try {
+                    const importedData = JSON.parse(event.target.result);
+                    for (const date in importedData) {
+                        if (!appData[date]) { appData[date] = importedData[date]; } 
+                        else { for (const period in importedData[date]) { if (!appData[date][period] || !appData[date][period].sys) { appData[date][period] = importedData[date][period]; } } }
+                    }
+                    localStorage.setItem('bpRecords', JSON.stringify(appData));
+                    showToast('舊記錄已完美合併還原！'); renderTable();
+                } catch (error) { showToast('檔案讀取失敗，請確認格式', 'error'); }
+                e.target.value = '';
+            }; reader.readAsText(file);
         });
-    }
-</script>
+
+        function renderTable() {
+            const tbody = document.getElementById('record-table-body');
+            const startDateStr = document.getElementById('start-date').value;
+            const endDateStr = document.getElementById('end-date').value;
+            if (!startDateStr || !endDateStr) return;
+
+            const fragment = document.createDocumentFragment();
+            let currentDate = new Date(startDateStr);
+            const endDate = new Date(endDateStr);
+
+            while (currentDate <= endDate) {
+                const date = formatDate(currentDate);
+                const data = appData[date] || { morning: {}, evening: {} };
+                const m = data.morning || {}; const e = data.evening || {};
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="col-date">${date}</td>
+                    <td class="col-data">${m.sys || ''}</td><td class="col-data">${m.dia || ''}</td><td class="col-data">${m.hr || ''}</td>
+                    <td class="col-data">${e.sys || ''}</td><td class="col-data">${e.dia || ''}</td><td class="col-data">${e.hr || ''}</td>
+                    <td class="col-action no-print"><button class="edit-btn" onclick="openPeriodModal('${date}')">✏️</button></td>
+                `;
+                fragment.appendChild(tr);
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+            tbody.innerHTML = '';
+            tbody.appendChild(fragment);
+        }
+
+        function printNative() {
+            const startDateStr = document.getElementById('start-date').value;
+            const endDateStr = document.getElementById('end-date').value;
+            if (!startDateStr || !endDateStr) { showToast('請先選擇匯出範圍', 'error'); return; }
+            document.getElementById('print-title').innerText = `血壓記錄表\n(${startDateStr} 至 ${endDateStr})`;
+            window.print();
+        }
+
+        init();
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').then(reg => { console.log('SW 註冊成功'); }).catch(err => { console.log('SW 註冊失敗:', err); });
+            });
+        }
+    </script>
 </body>
 </html>
+

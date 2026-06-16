@@ -1,17 +1,18 @@
 {
-  "name": "血壓記錄表",
-  "short_name": "血壓記錄",
-  "description": "個人專屬的早晚血壓與心率記錄工具",
-  "start_url": "./index.html",
-  "display": "standalone",
-  "background_color": "#eaf1f0",
-  "theme_color": "#148b7f",
-  "icons": [
-    {
-      "src": "icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    }
-  ]
+    "name": "血壓記錄表",
+    "short_name": "血壓記錄",
+    "description": "個人專屬的早晚血壓與心率記錄工具 (V8.0)",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#eaf1f0",
+    "theme_color": "#148b7f",
+    "icons": [
+        {
+            "src": "icon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any maskable"
+        }
+    ]
 }
+

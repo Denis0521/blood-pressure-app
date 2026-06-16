@@ -1,36 +1,46 @@
-const CACHE_NAME = 'bp-app-v6.2.1'; // 強制降版更新，抹除 V6.4 記憶
+const CACHE_NAME = 'bp-app-v8.0'; // 版本號維持 V8.0
 const urlsToCache = [
-  './index.html',
-  './manifest.json',
-  './icon.svg'
+    './index.html',
+    './manifest.json',
+    './icon.svg'
 ];
 
 self.addEventListener('install', event => {
-  self.skipWaiting(); 
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
-  );
+    self.skipWaiting();
+    event.waitUntil(
+        caches.open(CACHE_NAME)
+            .then(cache => cache.addAll(urlsToCache))
+    );
 });
 
 self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('刪除舊快取:', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    }).then(() => self.clients.claim()) 
-  );
+    event.waitUntil(
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.map(cacheName => {
+                    if (cacheName !== CACHE_NAME) {
+                        console.log('刪除舊快取:', cacheName);
+                        return caches.delete(cacheName);
+                    }
+                })
+            );
+        }).then(() => self.clients.claim())
+    );
 });
 
 self.addEventListener('fetch', event => {
-  event.respondWith(
-    caches.match(event.request)
-      .then(response => response || fetch(event.request))
-  );
+    if (event.request.mode === 'navigate' || event.request.destination === 'document') {
+        event.respondWith(
+            fetch(event.request).catch(() => {
+                return caches.match('./index.html');
+            })
+        );
+    } else {
+        event.respondWith(
+            caches.match(event.request).then(response => {
+                return response || fetch(event.request);
+            })
+        );
+    }
 });
+
