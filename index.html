@@ -53,12 +53,12 @@
             --table-header: rgba(252, 228, 236, 0.9); --tr-even: rgba(253, 240, 244, 0.7);
             --jade-glow: 0 0 15px rgba(216, 27, 96, 0.1);
         }
-        body.theme-light-yellow {
-            --primary-color: #f9a825; --primary-gradient: linear-gradient(135deg, #fbc02d, #f57f17);
-            --bg-color: #fffde7; --card-bg: rgba(255, 255, 255, 0.85); --border-color: #fff9c4;
-            --text-dark: #f57f17; --text-gray: #f9a825; --input-bg: rgba(253, 252, 240, 0.9);
-            --table-header: rgba(255, 253, 231, 0.9); --tr-even: rgba(255, 254, 240, 0.7);
-            --jade-glow: 0 0 15px rgba(249, 168, 37, 0.1);
+        body.theme-light-gray {
+            --primary-color: #607d8b; --primary-gradient: linear-gradient(135deg, #78909c, #546e7a);
+            --bg-color: #eceff1; --card-bg: rgba(255, 255, 255, 0.85); --border-color: #cfd8dc;
+            --text-dark: #37474f; --text-gray: #607d8b; --input-bg: rgba(244, 247, 249, 0.9);
+            --table-header: rgba(224, 230, 234, 0.9); --tr-even: rgba(239, 243, 245, 0.7);
+            --jade-glow: 0 0 15px rgba(96, 125, 139, 0.1);
         }
         
         body { 
@@ -79,17 +79,8 @@
             border: 1px solid var(--border-color);
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
         }
-        .card-title { font-size: 18px; font-weight: 800; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); color: var(--primary-color); display: flex; justify-content: space-between; align-items: center; }
+        .card-title { font-size: 18px; font-weight: 800; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); color: var(--primary-color); }
         
-        /* 時段選擇按鈕 (標題右側) */
-        .period-selector { display: flex; gap: 8px; }
-        .period-btn { padding: 6px 16px; border-radius: 20px; font-size: 18px; font-weight: 900; border: 2px solid transparent; cursor: pointer; transition: 0.2s; }
-        .btn-morning { background: #fff3e0; color: #f57c00; border-color: #ffe0b2; }
-        .btn-evening { background: #e3f2fd; color: #1976d2; border-color: #bbdefb; }
-        .period-btn.active { transform: scale(1.05); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
-        .btn-morning.active { background: #fb8c00; color: white; border-color: #f57c00; }
-        .btn-evening.active { background: #1976d2; color: white; border-color: #1565c0; }
-
         .input-group { display: flex; gap: 12px; margin-bottom: 20px; }
         .input-group input { 
             flex: 1; width: 100%; padding: 14px 8px; border-radius: 10px; font-size: 18px; 
@@ -145,17 +136,17 @@
         .print-only { display: none; }
         
         @media print {
-            @page { size: A4 portrait; margin: 10mm; }
+            @page { size: A4 portrait; margin: 15mm 20mm; } /* 上下增加邊距，左右縮減避免過寬 */
             .no-print, .col-action { display: none !important; }
             .print-only { display: block !important; text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 5px; color: black; }
             body { background: white !important; color: black !important; margin: 0; padding: 0; background-image: none !important; }
             .card { border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; backdrop-filter: none !important; background: white !important; }
             .table-responsive { overflow: visible !important; border: none !important; box-shadow: none !important; }
-            table { width: 100% !important; min-width: 100% !important; border-collapse: collapse !important; font-size: 9px !important; color: black !important; background: white !important; backdrop-filter: none !important; }
-            th, td { border: 1px solid black !important; padding: 2px 3px !important; color: black !important; background: transparent !important; white-space: normal !important; }
+            table { width: 100% !important; min-width: 100% !important; border-collapse: collapse !important; font-size: 10px !important; color: black !important; background: white !important; backdrop-filter: none !important; table-layout: auto !important; }
+            th, td { border: 1px solid black !important; padding: 4px 5px !important; color: black !important; background: transparent !important; white-space: normal !important; line-height: 1.5 !important; } /* 增加 padding 上下與 line-height 避免擁擠 */
             th { background-color: #f0f0f0 !important; font-weight: bold; }
             .col-date { width: auto !important; }
-            .col-data { width: 14.28% !important; }
+            .col-data { width: auto !important; } /* 改回 auto 讓瀏覽器自動分配適中寬度 */
         }
     </style>
 </head>
@@ -169,13 +160,7 @@
     <input type="file" id="import-file" accept=".json" style="display: none;">
 
     <div class="card no-print" id="input-card">
-        <div class="card-title">
-            <span id="input-card-title">新增 / 修改記錄</span>
-            <div class="period-selector">
-                <button class="period-btn btn-morning" id="btn-morning" onclick="setPeriod('morning')">早上</button>
-                <button class="period-btn btn-evening" id="btn-evening" onclick="setPeriod('evening')">晚上</button>
-            </div>
-        </div>
+        <div class="card-title" id="input-card-title">新增 / 修改記錄</div>
         <div class="input-group">
             <input type="number" id="sys" placeholder="收縮壓" inputmode="numeric">
             <input type="number" id="dia" placeholder="舒張壓" inputmode="numeric">
@@ -229,7 +214,7 @@
                 <option value="light-blue">淺藍色</option>
                 <option value="light-orange">淺橙色</option>
                 <option value="light-pink">淺粉色</option>
-                <option value="light-yellow">淺黃色</option>
+                <option value="light-gray">灰色</option>
             </select>
             <div class="card-title" style="margin-top: 5px;">💾 資料備份與還原</div>
             <p style="font-size: 14px; color: var(--text-gray); margin-bottom: 15px; font-weight: bold;">更換手機前，請先匯出備份檔案。</p>
@@ -267,11 +252,11 @@
             setTimeout(() => { if (container.contains(toast)) container.removeChild(toast); }, 3000);
         }
 
-        const themeColors = { 'light': '#e8f0ee', 'light-purple': '#f3e5f5', 'light-blue': '#e1f5fe', 'light-orange': '#fff3e0', 'light-pink': '#fce4ec', 'light-yellow': '#fffde7' };
+        const themeColors = { 'light': '#e8f0ee', 'light-purple': '#f3e5f5', 'light-blue': '#e1f5fe', 'light-orange': '#fff3e0', 'light-pink': '#fce4ec', 'light-gray': '#eceff1' };
         function updateThemeMeta(theme) { document.querySelector('meta[name="theme-color"]').setAttribute('content', themeColors[theme] || '#e8f0ee'); }
         function loadTheme() {
             let savedTheme = localStorage.getItem('bpTheme') || 'light';
-            const allowedThemes = ['light', 'light-purple', 'light-blue', 'light-orange', 'light-pink', 'light-yellow'];
+            const allowedThemes = ['light', 'light-purple', 'light-blue', 'light-orange', 'light-pink', 'light-gray'];
             if (!allowedThemes.includes(savedTheme)) savedTheme = 'light';
             document.body.className = `theme-${savedTheme}`;
             document.getElementById('theme-selector').value = savedTheme;
@@ -287,25 +272,10 @@
         function formatDate(date) { const y = date.getFullYear(); const m = String(date.getMonth() + 1).padStart(2, '0'); const d = String(date.getDate()).padStart(2, '0'); return `${y}-${m}-${d}`; }
         function getCurrentInfo() { const now = new Date(); const date = formatDate(now); const period = now.getHours() < 12 ? 'morning' : 'evening'; return { date, period, periodText: period === 'morning' ? '早上' : '晚上' }; }
 
-        function updatePeriodUI() {
-            const mBtn = document.getElementById('btn-morning');
-            const eBtn = document.getElementById('btn-evening');
-            mBtn.classList.toggle('active', editPeriod === 'morning');
-            eBtn.classList.toggle('active', editPeriod === 'evening');
-        }
-
-        function setPeriod(period) {
-            editPeriod = period;
-            updatePeriodUI();
-        }
-
         function init() {
             loadTheme();
             const info = getCurrentInfo();
             document.getElementById('current-time-display').innerText = `今日：${info.date} 時段：${info.periodText}`;
-            editPeriod = info.period;
-            updatePeriodUI();
-            
             const pastDate = new Date(); pastDate.setDate(pastDate.getDate() - 2);
             document.getElementById('start-date').value = formatDate(pastDate);
             document.getElementById('end-date').value = info.date;
@@ -316,10 +286,7 @@
             document.getElementById('sys').value = '';
             document.getElementById('dia').value = '';
             document.getElementById('hr').value = '';
-            editDate = null;
-            const info = getCurrentInfo();
-            editPeriod = info.period; // 恢復為當前時段
-            updatePeriodUI();
+            editDate = null; editPeriod = null;
             document.getElementById('input-card-title').innerText = '新增 / 修改記錄';
             document.getElementById('btn-delete').style.display = 'none';
         }
@@ -333,11 +300,9 @@
             if (!isNaN(sys) && !isNaN(dia) && sys <= dia) { showToast('錯誤：收縮壓必須大於舒張壓！', 'error'); return; }
             if ((sys && (sys < 60 || sys > 250)) || (dia && (dia < 40 || dia > 150)) || (hr && (hr < 30 || hr > 220))) { showToast('警告：數值超出正常生理範圍，仍會儲存。', 'warning'); }
 
-            if (!editPeriod) { showToast('請先選擇早上或晚上時段！', 'error'); return; }
-
             const info = getCurrentInfo();
             const targetDate = editDate || info.date;
-            const targetPeriod = editPeriod;
+            const targetPeriod = editPeriod || info.period;
 
             if (!appData[targetDate]) appData[targetDate] = { morning: {}, evening: {} };
             appData[targetDate][targetPeriod] = { sys: isNaN(sys) ? '' : String(sys), dia: isNaN(dia) ? '' : String(dia), hr: isNaN(hr) ? '' : String(hr) };
@@ -374,12 +339,11 @@
 
         function editRecord(date, period) {
             editDate = date; editPeriod = period;
-            updatePeriodUI();
             const record = appData[date]?.[period] || {};
             document.getElementById('sys').value = record.sys || '';
             document.getElementById('dia').value = record.dia || '';
             document.getElementById('hr').value = record.hr || '';
-            document.getElementById('input-card-title').innerText = `修改模式：${date}`;
+            document.getElementById('input-card-title').innerText = `修改模式：${date} (${period === 'morning' ? '早上' : '晚上'})`;
             document.getElementById('btn-delete').style.display = 'block';
             showToast(`已鎖定：${date} (${period === 'morning' ? '早上' : '晚上'})，請修改後按儲存`, 'warning');
             window.scrollTo({ top: 0, behavior: 'smooth' });
