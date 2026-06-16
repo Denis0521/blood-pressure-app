@@ -7,9 +7,8 @@
     <link rel="manifest" href="manifest.json">
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="apple-touch-icon" href="icon.svg">
-    <meta name="theme-color" content="#eaf1f0">
+    <meta name="theme-color" content="#e8f0ee">
     <style>
-        /* 玉石材質感變數 */
         :root {
             --primary-color: #1a8c7d;
             --primary-gradient: linear-gradient(135deg, #2aad9c, #14796c);
@@ -26,35 +25,12 @@
             --inset-shadow: rgba(20, 50, 45, 0.1);
             --jade-glow: 0 0 15px rgba(42, 173, 156, 0.15);
         }
-        body.theme-dark {
-            --primary-color: #26a69a; --primary-gradient: linear-gradient(135deg, #2dbdb0, #1f8c82);
-            --bg-color: #121212; --card-bg: rgba(30, 30, 30, 0.9); --border-color: #333333;
-            --text-dark: #e0e0e0; --text-gray: #aaaaaa; --input-bg: rgba(24, 24, 24, 0.9);
-            --table-header: rgba(44, 44, 44, 0.9); --tr-even: rgba(37, 37, 37, 0.7);
-            --shadow-dark: rgba(0, 0, 0, 0.6); --shadow-light: rgba(255, 255, 255, 0.05); --inset-shadow: rgba(0, 0, 0, 0.4);
-            --jade-glow: none;
-        }
-        body.theme-iron-gray {
-            --primary-color: #58a6ff; --primary-gradient: linear-gradient(135deg, #58a6ff, #3178c6);
-            --bg-color: #1a1c23; --card-bg: rgba(38, 41, 50, 0.9); --border-color: #3b404d;
-            --text-dark: #f0f6fc; --text-gray: #8b949e; --input-bg: rgba(20, 21, 26, 0.9);
-            --table-header: rgba(46, 50, 61, 0.9); --tr-even: rgba(29, 31, 39, 0.7);
-            --shadow-dark: rgba(0, 0, 0, 0.5); --shadow-light: rgba(255, 255, 255, 0.05); --inset-shadow: rgba(0, 0, 0, 0.3);
-            --jade-glow: none;
-        }
         body.theme-light-purple {
             --primary-color: #ab47bc; --primary-gradient: linear-gradient(135deg, #ba68c8, #8e24aa);
             --bg-color: #f3e5f5; --card-bg: rgba(255, 255, 255, 0.85); --border-color: #e1bee7;
             --text-dark: #4a148c; --text-gray: #8e24aa; --input-bg: rgba(253, 251, 253, 0.9);
             --table-header: rgba(243, 229, 245, 0.9); --tr-even: rgba(250, 248, 251, 0.7);
             --jade-glow: 0 0 15px rgba(171, 71, 188, 0.1);
-        }
-        body.theme-dark-blue {
-            --primary-color: #4da8da; --primary-gradient: linear-gradient(135deg, #5ebdf0, #3c8ebd);
-            --bg-color: #0b192c; --card-bg: rgba(26, 42, 64, 0.9); --border-color: #2c4260;
-            --text-dark: #e2e8f0; --text-gray: #94a3b8; --input-bg: rgba(18, 30, 48, 0.9);
-            --table-header: rgba(30, 41, 59, 0.9); --tr-even: rgba(21, 34, 56, 0.7);
-            --jade-glow: none;
         }
         body.theme-light-blue {
             --primary-color: #0288d1; --primary-gradient: linear-gradient(135deg, #039be5, #0277bd);
@@ -70,14 +46,27 @@
             --table-header: rgba(255, 224, 178, 0.9); --tr-even: rgba(255, 248, 240, 0.7);
             --jade-glow: 0 0 15px rgba(245, 124, 0, 0.1);
         }
+        body.theme-light-pink {
+            --primary-color: #d81b60; --primary-gradient: linear-gradient(135deg, #ec407a, #c2185b);
+            --bg-color: #fce4ec; --card-bg: rgba(255, 255, 255, 0.85); --border-color: #f8bbd0;
+            --text-dark: #880e4f; --text-gray: #d81b60; --input-bg: rgba(253, 245, 248, 0.9);
+            --table-header: rgba(252, 228, 236, 0.9); --tr-even: rgba(253, 240, 244, 0.7);
+            --jade-glow: 0 0 15px rgba(216, 27, 96, 0.1);
+        }
+        body.theme-light-yellow {
+            --primary-color: #f9a825; --primary-gradient: linear-gradient(135deg, #fbc02d, #f57f17);
+            --bg-color: #fffde7; --card-bg: rgba(255, 255, 255, 0.85); --border-color: #fff9c4;
+            --text-dark: #f57f17; --text-gray: #f9a825; --input-bg: rgba(253, 252, 240, 0.9);
+            --table-header: rgba(255, 253, 231, 0.9); --tr-even: rgba(255, 254, 240, 0.7);
+            --jade-glow: 0 0 15px rgba(249, 168, 37, 0.1);
+        }
         
         body { 
             font-family: 'Helvetica Neue', Helvetica, Arial, 'PingFang TC', sans-serif; 
             background-color: var(--bg-color); 
             background-image: radial-gradient(circle at 50% 0%, rgba(255,255,255,0.4), transparent 60%);
             color: var(--text-dark); margin: 0; padding: 12px; 
-            min-height: 100vh;
-            transition: background-color 0.3s ease, color 0.3s ease; 
+            min-height: 100vh; transition: background-color 0.3s ease, color 0.3s ease; 
         }
         .header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         h2 { margin: 0; font-size: 26px; font-weight: bold; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -90,7 +79,17 @@
             border: 1px solid var(--border-color);
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
         }
-        .card-title { font-size: 18px; font-weight: 800; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); color: var(--primary-color); }
+        .card-title { font-size: 18px; font-weight: 800; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); color: var(--primary-color); display: flex; justify-content: space-between; align-items: center; }
+        
+        /* 時段選擇按鈕 (標題右側) */
+        .period-selector { display: flex; gap: 8px; }
+        .period-btn { padding: 6px 16px; border-radius: 20px; font-size: 18px; font-weight: 900; border: 2px solid transparent; cursor: pointer; transition: 0.2s; }
+        .btn-morning { background: #fff3e0; color: #f57c00; border-color: #ffe0b2; }
+        .btn-evening { background: #e3f2fd; color: #1976d2; border-color: #bbdefb; }
+        .period-btn.active { transform: scale(1.05); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+        .btn-morning.active { background: #fb8c00; color: white; border-color: #f57c00; }
+        .btn-evening.active { background: #1976d2; color: white; border-color: #1565c0; }
+
         .input-group { display: flex; gap: 12px; margin-bottom: 20px; }
         .input-group input { 
             flex: 1; width: 100%; padding: 14px 8px; border-radius: 10px; font-size: 18px; 
@@ -109,8 +108,8 @@
         .hint-text { color: var(--primary-color); font-size: 14px; margin-bottom: 12px; font-weight: bold; }
         
         .table-responsive { width: 100%; overflow-x: auto; border-radius: 12px; box-shadow: 0 4px 20px var(--shadow-dark); border: 1px solid var(--border-color); }
-        table { width: 100%; border-collapse: collapse; text-align: center; font-size: 15px; background: var(--card-bg); color: var(--text-dark); table-layout: fixed; backdrop-filter: blur(6px); }
-        th, td { padding: 10px 4px; border: 1px solid var(--border-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        table { width: 100%; border-collapse: collapse; text-align: center; font-size: 15px; background: var(--card-bg); color: var(--text-dark); backdrop-filter: blur(6px); min-width: 600px; }
+        th, td { padding: 10px 6px; border: 1px solid var(--border-color); white-space: nowrap; }
         th { background-color: var(--table-header); font-weight: 800; color: var(--primary-color); }
         tr:nth-child(even) { background-color: var(--tr-even); }
         tr:hover { background-color: rgba(26, 140, 125, 0.05); }
@@ -132,11 +131,10 @@
         .theme-select { width: 100%; padding: 12px; border-radius: 10px; margin-bottom: 20px; background: var(--input-bg); color: var(--text-dark); border: 1px solid var(--border-color); font-size: 16px; box-shadow: inset 0 2px 4px var(--inset-shadow); }
         .version-text { text-align: center; margin-top: 20px; font-size: 13px; color: var(--text-gray); font-weight: bold; }
         
-        .period-btn-group { display: flex; gap: 10px; margin-top: 20px; }
-        .period-btn-group button { flex: 1; padding: 12px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; border: none; color: white; }
-        .btn-morning { background: linear-gradient(135deg, #fbbf24, #f59e0b); box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3); }
-        .btn-evening { background: linear-gradient(135deg, #60a5fa, #3b82f6); box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3); }
-        .period-btn-group button:active { transform: translateY(2px); }
+        .modal-period-btns { display: flex; gap: 10px; margin-top: 20px; }
+        .modal-period-btns button { flex: 1; padding: 14px; border-radius: 10px; font-size: 18px; font-weight: 900; cursor: pointer; border: none; color: white; }
+        .modal-btn-morning { background: #fb8c00; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.3); }
+        .modal-btn-evening { background: #1976d2; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.3); }
         
         .toast-container { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; align-items: center; gap: 10px; pointer-events: none; }
         .toast { background: var(--text-dark); color: var(--bg-color); padding: 14px 24px; border-radius: 30px; font-size: 15px; font-weight: bold; box-shadow: 0 8px 20px rgba(0,0,0,0.3); opacity: 0; transform: translateY(20px); animation: toastIn 0.3s forwards, toastOut 0.3s 2.5s forwards; pointer-events: auto; text-align: center; max-width: 80vw; }
@@ -147,14 +145,14 @@
         .print-only { display: none; }
         
         @media print {
-            @page { size: A4 landscape; margin: 8mm; }
+            @page { size: A4 portrait; margin: 10mm; }
             .no-print, .col-action { display: none !important; }
             .print-only { display: block !important; text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 5px; color: black; }
             body { background: white !important; color: black !important; margin: 0; padding: 0; background-image: none !important; }
             .card { border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; backdrop-filter: none !important; background: white !important; }
             .table-responsive { overflow: visible !important; border: none !important; box-shadow: none !important; }
-            table { width: 100% !important; min-width: 100% !important; border-collapse: collapse !important; font-size: 10px !important; color: black !important; table-layout: auto !important; background: white !important; backdrop-filter: none !important; }
-            th, td { border: 1px solid black !important; padding: 2px 3px !important; color: black !important; background: transparent !important; white-space: normal !important; overflow: visible !important; text-overflow: initial !important; }
+            table { width: 100% !important; min-width: 100% !important; border-collapse: collapse !important; font-size: 9px !important; color: black !important; background: white !important; backdrop-filter: none !important; }
+            th, td { border: 1px solid black !important; padding: 2px 3px !important; color: black !important; background: transparent !important; white-space: normal !important; }
             th { background-color: #f0f0f0 !important; font-weight: bold; }
             .col-date { width: auto !important; }
             .col-data { width: 14.28% !important; }
@@ -171,7 +169,13 @@
     <input type="file" id="import-file" accept=".json" style="display: none;">
 
     <div class="card no-print" id="input-card">
-        <div class="card-title" id="input-card-title">新增 / 修改記錄</div>
+        <div class="card-title">
+            <span id="input-card-title">新增 / 修改記錄</span>
+            <div class="period-selector">
+                <button class="period-btn btn-morning" id="btn-morning" onclick="setPeriod('morning')">早上</button>
+                <button class="period-btn btn-evening" id="btn-evening" onclick="setPeriod('evening')">晚上</button>
+            </div>
+        </div>
         <div class="input-group">
             <input type="number" id="sys" placeholder="收縮壓" inputmode="numeric">
             <input type="number" id="dia" placeholder="舒張壓" inputmode="numeric">
@@ -221,12 +225,11 @@
             <div class="card-title" style="margin-top: 5px;">🎨 佈景主題</div>
             <select id="theme-selector" class="theme-select" onchange="changeTheme()">
                 <option value="light">淺色 (預設)</option>
-                <option value="dark">深色</option>
-                <option value="iron-gray">鐵灰色</option>
                 <option value="light-purple">淺紫色</option>
-                <option value="dark-blue">深藍色</option>
                 <option value="light-blue">淺藍色</option>
                 <option value="light-orange">淺橙色</option>
+                <option value="light-pink">淺粉色</option>
+                <option value="light-yellow">淺黃色</option>
             </select>
             <div class="card-title" style="margin-top: 5px;">💾 資料備份與還原</div>
             <p style="font-size: 14px; color: var(--text-gray); margin-bottom: 15px; font-weight: bold;">更換手機前，請先匯出備份檔案。</p>
@@ -243,9 +246,9 @@
             <span class="modal-close" onclick="closePeriodModal()">&times;</span>
             <div class="card-title" id="period-modal-title">選擇修改時段</div>
             <p style="color: var(--text-gray); font-size: 14px; margin-bottom: 10px;">請選擇您要修改的時段：</p>
-            <div class="period-btn-group">
-                <button class="btn-morning" onclick="confirmEdit('morning')">☀️ 早上</button>
-                <button class="btn-evening" onclick="confirmEdit('evening')">🌙 晚上</button>
+            <div class="modal-period-btns">
+                <button class="modal-btn-morning" onclick="confirmEdit('morning')">☀️ 早上</button>
+                <button class="modal-btn-evening" onclick="confirmEdit('evening')">🌙 晚上</button>
             </div>
         </div>
     </div>
@@ -264,11 +267,12 @@
             setTimeout(() => { if (container.contains(toast)) container.removeChild(toast); }, 3000);
         }
 
-        const themeColors = { 'light': '#e8f0ee', 'dark': '#121212', 'iron-gray': '#1a1c23', 'light-purple': '#f3e5f5', 'dark-blue': '#0b192c', 'light-blue': '#e1f5fe', 'light-orange': '#fff3e0' };
+        const themeColors = { 'light': '#e8f0ee', 'light-purple': '#f3e5f5', 'light-blue': '#e1f5fe', 'light-orange': '#fff3e0', 'light-pink': '#fce4ec', 'light-yellow': '#fffde7' };
         function updateThemeMeta(theme) { document.querySelector('meta[name="theme-color"]').setAttribute('content', themeColors[theme] || '#e8f0ee'); }
         function loadTheme() {
             let savedTheme = localStorage.getItem('bpTheme') || 'light';
-            if (savedTheme === 'metal') savedTheme = 'light';
+            const allowedThemes = ['light', 'light-purple', 'light-blue', 'light-orange', 'light-pink', 'light-yellow'];
+            if (!allowedThemes.includes(savedTheme)) savedTheme = 'light';
             document.body.className = `theme-${savedTheme}`;
             document.getElementById('theme-selector').value = savedTheme;
             updateThemeMeta(savedTheme);
@@ -283,10 +287,25 @@
         function formatDate(date) { const y = date.getFullYear(); const m = String(date.getMonth() + 1).padStart(2, '0'); const d = String(date.getDate()).padStart(2, '0'); return `${y}-${m}-${d}`; }
         function getCurrentInfo() { const now = new Date(); const date = formatDate(now); const period = now.getHours() < 12 ? 'morning' : 'evening'; return { date, period, periodText: period === 'morning' ? '早上' : '晚上' }; }
 
+        function updatePeriodUI() {
+            const mBtn = document.getElementById('btn-morning');
+            const eBtn = document.getElementById('btn-evening');
+            mBtn.classList.toggle('active', editPeriod === 'morning');
+            eBtn.classList.toggle('active', editPeriod === 'evening');
+        }
+
+        function setPeriod(period) {
+            editPeriod = period;
+            updatePeriodUI();
+        }
+
         function init() {
             loadTheme();
             const info = getCurrentInfo();
             document.getElementById('current-time-display').innerText = `今日：${info.date} 時段：${info.periodText}`;
+            editPeriod = info.period;
+            updatePeriodUI();
+            
             const pastDate = new Date(); pastDate.setDate(pastDate.getDate() - 2);
             document.getElementById('start-date').value = formatDate(pastDate);
             document.getElementById('end-date').value = info.date;
@@ -297,7 +316,10 @@
             document.getElementById('sys').value = '';
             document.getElementById('dia').value = '';
             document.getElementById('hr').value = '';
-            editDate = null; editPeriod = null;
+            editDate = null;
+            const info = getCurrentInfo();
+            editPeriod = info.period; // 恢復為當前時段
+            updatePeriodUI();
             document.getElementById('input-card-title').innerText = '新增 / 修改記錄';
             document.getElementById('btn-delete').style.display = 'none';
         }
@@ -311,9 +333,11 @@
             if (!isNaN(sys) && !isNaN(dia) && sys <= dia) { showToast('錯誤：收縮壓必須大於舒張壓！', 'error'); return; }
             if ((sys && (sys < 60 || sys > 250)) || (dia && (dia < 40 || dia > 150)) || (hr && (hr < 30 || hr > 220))) { showToast('警告：數值超出正常生理範圍，仍會儲存。', 'warning'); }
 
+            if (!editPeriod) { showToast('請先選擇早上或晚上時段！', 'error'); return; }
+
             const info = getCurrentInfo();
             const targetDate = editDate || info.date;
-            const targetPeriod = editPeriod || info.period;
+            const targetPeriod = editPeriod;
 
             if (!appData[targetDate]) appData[targetDate] = { morning: {}, evening: {} };
             appData[targetDate][targetPeriod] = { sys: isNaN(sys) ? '' : String(sys), dia: isNaN(dia) ? '' : String(dia), hr: isNaN(hr) ? '' : String(hr) };
@@ -350,11 +374,12 @@
 
         function editRecord(date, period) {
             editDate = date; editPeriod = period;
+            updatePeriodUI();
             const record = appData[date]?.[period] || {};
             document.getElementById('sys').value = record.sys || '';
             document.getElementById('dia').value = record.dia || '';
             document.getElementById('hr').value = record.hr || '';
-            document.getElementById('input-card-title').innerText = `修改模式：${date} ${period === 'morning' ? '早上' : '晚上'}`;
+            document.getElementById('input-card-title').innerText = `修改模式：${date}`;
             document.getElementById('btn-delete').style.display = 'block';
             showToast(`已鎖定：${date} (${period === 'morning' ? '早上' : '晚上'})，請修改後按儲存`, 'warning');
             window.scrollTo({ top: 0, behavior: 'smooth' });

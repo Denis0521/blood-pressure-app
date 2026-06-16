@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bp-app-v8.0'; // 版本號維持 V8.0
+const CACHE_NAME = 'bp-app-v8.0';
 const urlsToCache = [
     './index.html',
     './manifest.json',
