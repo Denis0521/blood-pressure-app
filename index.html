@@ -28,7 +28,7 @@
             --text-3d: 1px 1px 0px rgba(255,255,255,0.4), 2px 2px 2px rgba(20,50,45,0.2);
             --text-engrave: 1px 1px 1px rgba(0,0,0,0.3), inset 1px 1px 1px rgba(255,255,255,0.2);
         }
-        body.theme-light-purple {
+        body.purple {
             --primary-color: #ab47bc; --primary-gradient: linear-gradient(145deg, #ba68c8, #8e24aa);
             --bg-color: #f3e5f5; --card-bg: #f3e5f5; --border-color: #e1bee7;
             --text-dark: #4a148c; --text-gray: #8e24aa; --input-bg: transparent;
@@ -37,7 +37,7 @@
             --btn-shadow: 6px 6px 12px rgba(74, 20, 140, 0.25), -6px -6px 12px rgba(255, 255, 255, 0.5);
             --input-shadow: inset 4px 4px 8px rgba(74, 20, 140, 0.2), inset -4px -4px 8px rgba(255, 255, 255, 0.9);
         }
-        body.theme-light-blue {
+        body.blue {
             --primary-color: #0288d1; --primary-gradient: linear-gradient(145deg, #039be5, #0277bd);
             --bg-color: #e1f5fe; --card-bg: #e1f5fe; --border-color: #b3e5fc;
             --text-dark: #01579b; --text-gray: #0288d1; --input-bg: transparent;
@@ -46,7 +46,7 @@
             --btn-shadow: 6px 6px 12px rgba(1, 87, 155, 0.25), -6px -6px 12px rgba(255, 255, 255, 0.5);
             --input-shadow: inset 4px 4px 8px rgba(1, 87, 155, 0.2), inset -4px -4px 8px rgba(255, 255, 255, 0.9);
         }
-        body.theme-light-orange {
+        body.orange {
             --primary-color: #f57c00; --primary-gradient: linear-gradient(145deg, #fb8c00, #ef6c00);
             --bg-color: #fff3e0; --card-bg: #fff3e0; --border-color: #ffe0b2;
             --text-dark: #e65100; --text-gray: #f57c00; --input-bg: transparent;
@@ -55,7 +55,7 @@
             --btn-shadow: 6px 6px 12px rgba(230, 81, 0, 0.25), -6px -6px 12px rgba(255, 255, 255, 0.5);
             --input-shadow: inset 4px 4px 8px rgba(230, 81, 0, 0.2), inset -4px -4px 8px rgba(255, 255, 255, 0.9);
         }
-        body.theme-light-pink {
+        body.pink {
             --primary-color: #d81b60; --primary-gradient: linear-gradient(145deg, #ec407a, #c2185b);
             --bg-color: #fce4ec; --card-bg: #fce4ec; --border-color: #f8bbd0;
             --text-dark: #880e4f; --text-gray: #d81b60; --input-bg: transparent;
@@ -64,7 +64,7 @@
             --btn-shadow: 6px 6px 12px rgba(136, 14, 79, 0.25), -6px -6px 12px rgba(255, 255, 255, 0.5);
             --input-shadow: inset 4px 4px 8px rgba(136, 14, 79, 0.2), inset -4px -4px 8px rgba(255, 255, 255, 0.9);
         }
-        body.theme-light-brown {
+        body.brown {
             --primary-color: #795548; --primary-gradient: linear-gradient(145deg, #8d6e63, #5d4037);
             --bg-color: #efebe9; --card-bg: #efebe9; --border-color: #d7ccc8;
             --text-dark: #3e2723; --text-gray: #795548; --input-bg: transparent;
@@ -72,6 +72,15 @@
             --card-shadow: 8px 8px 16px rgba(62, 39, 35, 0.2), -8px -8px 16px rgba(255, 255, 255, 0.9);
             --btn-shadow: 6px 6px 12px rgba(62, 39, 35, 0.25), -6px -6px 12px rgba(255, 255, 255, 0.5);
             --input-shadow: inset 4px 4px 8px rgba(62, 39, 35, 0.2), inset -4px -4px 8px rgba(255, 255, 255, 0.9);
+        }
+        body.gray {
+            --primary-color: #616161; --primary-gradient: linear-gradient(145deg, #757575, #424242);
+            --bg-color: #f5f5f5; --card-bg: #f5f5f5; --border-color: #e0e0e0;
+            --text-dark: #212121; --text-gray: #616161; --input-bg: transparent;
+            --table-header: #eeeeee; --tr-even: #fafafa;
+            --card-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2), -8px -8px 16px rgba(255, 255, 255, 0.9);
+            --btn-shadow: 6px 6px 12px rgba(0, 0, 0, 0.25), -6px -6px 12px rgba(255, 255, 255, 0.5);
+            --input-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.2), inset -4px -4px 8px rgba(255, 255, 255, 0.9);
         }
         
         body { 
@@ -102,7 +111,7 @@
         .input-group input:focus { outline: none; border-color: var(--primary-color); box-shadow: var(--input-shadow), 0 0 0 2px rgba(26, 140, 125, 0.2); }
         .btn-group { display: flex; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; }
         button { 
-            flex: 1; min-width: 100px; padding: 12px; border-radius: 12px; font-size: 14px; font-weight: 900; 
+            flex: 1; min-width: 100px; padding: 12px; border-radius: 12px; font-size: 16px; font-weight: 900; 
             cursor: pointer; border: none; transition: 0.1s; color: white; text-shadow: var(--text-engrave);
             background: var(--primary-gradient); box-shadow: var(--btn-shadow); border: 1px solid rgba(255,255,255,0.2);
         }
@@ -219,11 +228,12 @@
             <div class="card-title" style="margin-top: 5px;">🎨 佈景主題</div>
             <select id="theme-selector" class="theme-select" onchange="changeTheme()">
                 <option value="light">淺色 (預設)</option>
-                <option value="light-purple">淺紫色</option>
-                <option value="light-blue">淺藍色</option>
-                <option value="light-orange">淺橙色</option>
-                <option value="light-pink">淺粉色</option>
-                <option value="light-brown">淺棕色</option>
+                <option value="purple">紫色</option>
+                <option value="blue">藍色</option>
+                <option value="orange">橙色</option>
+                <option value="pink">粉色</option>
+                <option value="brown">棕色</option>
+                <option value="gray">灰色</option>
             </select>
             <div class="card-title" style="margin-top: 5px;">💾 資料備份與還原</div>
             <p style="font-size: 13px; color: var(--text-gray); margin-bottom: 12px; font-weight: bold;">更換手機前，請先匯出備份檔案。</p>
@@ -261,19 +271,19 @@
             setTimeout(() => { if (container.contains(toast)) container.removeChild(toast); }, 3000);
         }
 
-        const themeColors = { 'light': '#e0ece9', 'light-purple': '#f3e5f5', 'light-blue': '#e1f5fe', 'light-orange': '#fff3e0', 'light-pink': '#fce4ec', 'light-brown': '#efebe9' };
+        const themeColors = { 'light': '#e0ece9', 'purple': '#f3e5f5', 'blue': '#e1f5fe', 'orange': '#fff3e0', 'pink': '#fce4ec', 'brown': '#efebe9', 'gray': '#f5f5f5' };
         function updateThemeMeta(theme) { document.querySelector('meta[name="theme-color"]').setAttribute('content', themeColors[theme] || '#e0ece9'); }
         function loadTheme() {
             let savedTheme = localStorage.getItem('bpTheme') || 'light';
-            const allowedThemes = ['light', 'light-purple', 'light-blue', 'light-orange', 'light-pink', 'light-brown'];
+            const allowedThemes = ['light', 'purple', 'blue', 'orange', 'pink', 'brown', 'gray'];
             if (!allowedThemes.includes(savedTheme)) savedTheme = 'light';
-            document.body.className = `theme-${savedTheme}`;
+            document.body.className = savedTheme;
             document.getElementById('theme-selector').value = savedTheme;
             updateThemeMeta(savedTheme);
         }
         function changeTheme() {
             const theme = document.getElementById('theme-selector').value;
-            document.body.className = `theme-${theme}`;
+            document.body.className = theme;
             localStorage.setItem('bpTheme', theme);
             updateThemeMeta(theme);
         }
