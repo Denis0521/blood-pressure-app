@@ -15,7 +15,7 @@
             --bg-color: #e0ece9;
             --card-bg: #e0ece9;
             --border-color: #c5ddd8;
-            --text-dark: #1c3b36;
+            --text-dark: #000000;
             --text-gray: #5f7a75;
             --input-bg: transparent;
             --table-header: #d6e6e2;
@@ -31,7 +31,7 @@
         body.purple {
             --primary-color: #ab47bc; --primary-gradient: linear-gradient(145deg, #ba68c8, #8e24aa);
             --bg-color: #f3e5f5; --card-bg: #f3e5f5; --border-color: #e1bee7;
-            --text-dark: #4a148c; --text-gray: #8e24aa; --input-bg: transparent;
+            --text-dark: #000000; --text-gray: #8e24aa; --input-bg: transparent;
             --table-header: #ecd0f0; --tr-even: #eedcf2;
             --card-shadow: 8px 8px 16px rgba(74, 20, 140, 0.2), -8px -8px 16px rgba(255, 255, 255, 0.9);
             --btn-shadow: 6px 6px 12px rgba(74, 20, 140, 0.25), -6px -6px 12px rgba(255, 255, 255, 0.5);
@@ -40,7 +40,7 @@
         body.blue {
             --primary-color: #0288d1; --primary-gradient: linear-gradient(145deg, #039be5, #0277bd);
             --bg-color: #e1f5fe; --card-bg: #e1f5fe; --border-color: #b3e5fc;
-            --text-dark: #01579b; --text-gray: #0288d1; --input-bg: transparent;
+            --text-dark: #000000; --text-gray: #0288d1; --input-bg: transparent;
             --table-header: #cdeefc; --tr-even: #d4f1fc;
             --card-shadow: 8px 8px 16px rgba(1, 87, 155, 0.2), -8px -8px 16px rgba(255, 255, 255, 0.9);
             --btn-shadow: 6px 6px 12px rgba(1, 87, 155, 0.25), -6px -6px 12px rgba(255, 255, 255, 0.5);
@@ -49,7 +49,7 @@
         body.brown {
             --primary-color: #795548; --primary-gradient: linear-gradient(145deg, #8d6e63, #5d4037);
             --bg-color: #efebe9; --card-bg: #efebe9; --border-color: #d7ccc8;
-            --text-dark: #3e2723; --text-gray: #795548; --input-bg: transparent;
+            --text-dark: #000000; --text-gray: #795548; --input-bg: transparent;
             --table-header: #e2d9d5; --tr-even: #e8e0dc;
             --card-shadow: 8px 8px 16px rgba(62, 39, 35, 0.2), -8px -8px 16px rgba(255, 255, 255, 0.9);
             --btn-shadow: 6px 6px 12px rgba(62, 39, 35, 0.25), -6px -6px 12px rgba(255, 255, 255, 0.5);
@@ -63,16 +63,6 @@
             --card-shadow: 8px 8px 16px rgba(0, 0, 0, 0.15), -8px -8px 16px rgba(255, 255, 255, 0.9);
             --btn-shadow: 6px 6px 12px rgba(0, 0, 0, 0.2), -6px -6px 12px rgba(255, 255, 255, 0.5);
             --input-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.15), inset -4px -4px 8px rgba(255, 255, 255, 0.9);
-        }
-        body.iron-gray {
-            --primary-color: #424242; --primary-gradient: linear-gradient(145deg, #616161, #212121);
-            --bg-color: #f5f5f5; --card-bg: #f5f5f5; --border-color: #424242;
-            --text-dark: #000000; --text-gray: #424242; --input-bg: transparent;
-            --table-header: #e0e0e0; --tr-even: #f0f0f0;
-            --card-shadow: 8px 8px 16px rgba(0, 0, 0, 0.3), -8px -8px 16px rgba(255, 255, 255, 0.9);
-            --card-inset: inset 2px 2px 5px rgba(0,0,0,0.2), inset -2px -2px 5px rgba(255,255,255,0.1);
-            --btn-shadow: 6px 6px 12px rgba(0, 0, 0, 0.3), -6px -6px 12px rgba(255, 255, 255, 0.5);
-            --input-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.2), inset -4px -4px 8px rgba(255, 255, 255, 0.1);
         }
         
         body { 
@@ -224,7 +214,6 @@
                 <option value="blue">藍色</option>
                 <option value="brown">棕色</option>
                 <option value="gray">灰色</option>
-                <option value="iron-gray">鐵灰高反差</option>
             </select>
             <div class="card-title" style="margin-top: 5px;">💾 資料備份與還原</div>
             <p style="font-size: 13px; color: var(--text-gray); margin-bottom: 12px; font-weight: bold;">更換手機前，請先匯出備份檔案。</p>
@@ -262,13 +251,13 @@
             setTimeout(() => { if (container.contains(toast)) container.removeChild(toast); }, 3000);
         }
 
-        const themeColors = { 'light': '#e0ece9', 'purple': '#f3e5f5', 'blue': '#e1f5fe', 'brown': '#efebe9', 'gray': '#f0f0f0', 'iron-gray': '#f5f5f5' };
+        const themeColors = { 'light': '#e0ece9', 'purple': '#f3e5f5', 'blue': '#e1f5fe', 'brown': '#efebe9', 'gray': '#f0f0f0' };
         function updateThemeMeta(theme) { 
             document.querySelector('meta[name="theme-color"]').setAttribute('content', themeColors[theme] || '#e0ece9'); 
         }
         function loadTheme() {
             let savedTheme = localStorage.getItem('bpTheme') || 'light';
-            const allowedThemes = ['light', 'purple', 'blue', 'brown', 'gray', 'iron-gray'];
+            const allowedThemes = ['light', 'purple', 'blue', 'brown', 'gray'];
             if (!allowedThemes.includes(savedTheme)) savedTheme = 'light';
             document.body.className = savedTheme;
             document.getElementById('theme-selector').value = savedTheme;
