@@ -53,12 +53,12 @@
             --table-header: rgba(252, 228, 236, 0.9); --tr-even: rgba(253, 240, 244, 0.7);
             --jade-glow: 0 0 15px rgba(216, 27, 96, 0.1);
         }
-        body.theme-light-gray {
-            --primary-color: #607d8b; --primary-gradient: linear-gradient(135deg, #78909c, #546e7a);
-            --bg-color: #eceff1; --card-bg: rgba(255, 255, 255, 0.85); --border-color: #cfd8dc;
-            --text-dark: #37474f; --text-gray: #607d8b; --input-bg: rgba(244, 247, 249, 0.9);
-            --table-header: rgba(224, 230, 234, 0.9); --tr-even: rgba(239, 243, 245, 0.7);
-            --jade-glow: 0 0 15px rgba(96, 125, 139, 0.1);
+        body.theme-light-brown {
+            --primary-color: #795548; --primary-gradient: linear-gradient(135deg, #8d6e63, #5d4037);
+            --bg-color: #efebe9; --card-bg: rgba(255, 255, 255, 0.85); --border-color: #d7ccc8;
+            --text-dark: #3e2723; --text-gray: #795548; --input-bg: rgba(250, 248, 247, 0.9);
+            --table-header: rgba(239, 235, 233, 0.9); --tr-even: rgba(245, 242, 240, 0.7);
+            --jade-glow: 0 0 15px rgba(121, 85, 72, 0.1);
         }
         
         body { 
@@ -80,6 +80,14 @@
             backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
         }
         .card-title { font-size: 18px; font-weight: 800; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); color: var(--primary-color); }
+        
+        /* 分割線樣式 */
+        .divider { 
+            height: 1px; 
+            background: linear-gradient(90deg, transparent, var(--border-color), transparent); 
+            margin: 20px 0; 
+            border: none; 
+        }
         
         .input-group { display: flex; gap: 12px; margin-bottom: 20px; }
         .input-group input { 
@@ -136,17 +144,17 @@
         .print-only { display: none; }
         
         @media print {
-            @page { size: A4 portrait; margin: 15mm 20mm; } /* 上下增加邊距，左右縮減避免過寬 */
+            @page { size: A4 portrait; margin: 15mm 20mm; }
             .no-print, .col-action { display: none !important; }
             .print-only { display: block !important; text-align: center; font-size: 18px; font-weight: bold; margin-bottom: 5px; color: black; }
             body { background: white !important; color: black !important; margin: 0; padding: 0; background-image: none !important; }
             .card { border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; backdrop-filter: none !important; background: white !important; }
             .table-responsive { overflow: visible !important; border: none !important; box-shadow: none !important; }
             table { width: 100% !important; min-width: 100% !important; border-collapse: collapse !important; font-size: 10px !important; color: black !important; background: white !important; backdrop-filter: none !important; table-layout: auto !important; }
-            th, td { border: 1px solid black !important; padding: 4px 5px !important; color: black !important; background: transparent !important; white-space: normal !important; line-height: 1.5 !important; } /* 增加 padding 上下與 line-height 避免擁擠 */
+            th, td { border: 1px solid black !important; padding: 4px 5px !important; color: black !important; background: transparent !important; white-space: normal !important; line-height: 1.5 !important; }
             th { background-color: #f0f0f0 !important; font-weight: bold; }
             .col-date { width: auto !important; }
-            .col-data { width: auto !important; } /* 改回 auto 讓瀏覽器自動分配適中寬度 */
+            .col-data { width: auto !important; }
         }
     </style>
 </head>
@@ -159,48 +167,56 @@
     <div class="subtitle no-print" id="current-time-display">今日：載入中... 時段：載入中...</div>
     <input type="file" id="import-file" accept=".json" style="display: none;">
 
-    <div class="card no-print" id="input-card">
-        <div class="card-title" id="input-card-title">新增 / 修改記錄</div>
-        <div class="input-group">
-            <input type="number" id="sys" placeholder="收縮壓" inputmode="numeric">
-            <input type="number" id="dia" placeholder="舒張壓" inputmode="numeric">
-            <input type="number" id="hr" placeholder="心率" inputmode="numeric">
+    <!-- 合併後的單一卡片 -->
+    <div class="card" id="main-card">
+        <!-- 輸入區塊 -->
+        <div class="no-print" id="input-section">
+            <div class="card-title" id="input-card-title">新增 / 修改記錄</div>
+            <div class="input-group">
+                <input type="number" id="sys" placeholder="收縮壓" inputmode="numeric">
+                <input type="number" id="dia" placeholder="舒張壓" inputmode="numeric">
+                <input type="number" id="hr" placeholder="心率" inputmode="numeric">
+            </div>
+            <div class="btn-group">
+                <button class="btn-primary" onclick="saveRecord()">儲存本時段</button>
+                <button class="btn-outline" onclick="clearInputs()">取消修改</button>
+                <button class="btn-danger" id="btn-delete" onclick="deleteCurrentRecord()" style="display: none;">刪除此筆</button>
+            </div>
         </div>
-        <div class="btn-group">
-            <button class="btn-primary" onclick="saveRecord()">儲存本時段</button>
-            <button class="btn-outline" onclick="clearInputs()">取消修改</button>
-            <button class="btn-danger" id="btn-delete" onclick="deleteCurrentRecord()" style="display: none;">刪除此筆</button>
-        </div>
-    </div>
-
-    <div class="card" id="print-area">
-        <div class="card-title no-print">血壓記錄查詢與輸出</div>
-        <div class="print-only" id="print-title">血壓記錄表</div>
-        <div class="hint-text no-print">💡 提示：點擊右側「✏️」可修改或補填早晚記錄。</div>
-        <div class="input-group no-print">
-            <input type="date" id="start-date">
-            <input type="date" id="end-date">
-        </div>
-        <div class="btn-group no-print">
-            <button class="btn-outline" onclick="renderTable()">開始查詢</button>
-            <button class="btn-primary" onclick="printNative()">🖨️ 產出 PDF</button>
-        </div>
-        <div class="table-responsive">
-            <table id="bp-table">
-                <thead>
-                    <tr>
-                        <th rowspan="2" class="align-bottom col-date">日期</th>
-                        <th colspan="3" class="group-header">早上記錄</th>
-                        <th colspan="3" class="group-header">晚上記錄</th>
-                        <th rowspan="2" class="align-bottom col-action no-print">修改</th>
-                    </tr>
-                    <tr class="sub-header">
-                        <th class="col-data">收縮壓</th><th class="col-data">舒張壓</th><th class="col-data">心率</th>
-                        <th class="col-data">收縮壓</th><th class="col-data">舒張壓</th><th class="col-data">心率</th>
-                    </tr>
-                </thead>
-                <tbody id="record-table-body"></tbody>
-            </table>
+        
+        <!-- 分割線 -->
+        <hr class="divider no-print">
+        
+        <!-- 記錄區塊 -->
+        <div id="print-area">
+            <div class="card-title no-print">血壓記錄查詢與輸出</div>
+            <div class="print-only" id="print-title">血壓記錄表</div>
+            <div class="hint-text no-print">💡 提示：點擊右側「✏️」可修改或補填早晚記錄。</div>
+            <div class="input-group no-print">
+                <input type="date" id="start-date">
+                <input type="date" id="end-date">
+            </div>
+            <div class="btn-group no-print">
+                <button class="btn-outline" onclick="renderTable()">開始查詢</button>
+                <button class="btn-primary" onclick="printNative()">🖨️ 產出 PDF</button>
+            </div>
+            <div class="table-responsive">
+                <table id="bp-table">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" class="align-bottom col-date">日期</th>
+                            <th colspan="3" class="group-header">早上記錄</th>
+                            <th colspan="3" class="group-header">晚上記錄</th>
+                            <th rowspan="2" class="align-bottom col-action no-print">修改</th>
+                        </tr>
+                        <tr class="sub-header">
+                            <th class="col-data">收縮壓</th><th class="col-data">舒張壓</th><th class="col-data">心率</th>
+                            <th class="col-data">收縮壓</th><th class="col-data">舒張壓</th><th class="col-data">心率</th>
+                        </tr>
+                    </thead>
+                    <tbody id="record-table-body"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -214,7 +230,7 @@
                 <option value="light-blue">淺藍色</option>
                 <option value="light-orange">淺橙色</option>
                 <option value="light-pink">淺粉色</option>
-                <option value="light-gray">灰色</option>
+                <option value="light-brown">淺棕色</option>
             </select>
             <div class="card-title" style="margin-top: 5px;">💾 資料備份與還原</div>
             <p style="font-size: 14px; color: var(--text-gray); margin-bottom: 15px; font-weight: bold;">更換手機前，請先匯出備份檔案。</p>
@@ -252,11 +268,11 @@
             setTimeout(() => { if (container.contains(toast)) container.removeChild(toast); }, 3000);
         }
 
-        const themeColors = { 'light': '#e8f0ee', 'light-purple': '#f3e5f5', 'light-blue': '#e1f5fe', 'light-orange': '#fff3e0', 'light-pink': '#fce4ec', 'light-gray': '#eceff1' };
+        const themeColors = { 'light': '#e8f0ee', 'light-purple': '#f3e5f5', 'light-blue': '#e1f5fe', 'light-orange': '#fff3e0', 'light-pink': '#fce4ec', 'light-brown': '#efebe9' };
         function updateThemeMeta(theme) { document.querySelector('meta[name="theme-color"]').setAttribute('content', themeColors[theme] || '#e8f0ee'); }
         function loadTheme() {
             let savedTheme = localStorage.getItem('bpTheme') || 'light';
-            const allowedThemes = ['light', 'light-purple', 'light-blue', 'light-orange', 'light-pink', 'light-gray'];
+            const allowedThemes = ['light', 'light-purple', 'light-blue', 'light-orange', 'light-pink', 'light-brown'];
             if (!allowedThemes.includes(savedTheme)) savedTheme = 'light';
             document.body.className = `theme-${savedTheme}`;
             document.getElementById('theme-selector').value = savedTheme;
