@@ -127,25 +127,24 @@
         .input-group { display: flex; gap: 12px; margin-bottom: 16px; }
         .input-group input { 
             flex: 1; width: 100%; padding: 14px 8px; border-radius: 14px; font-size: 18px; font-weight: bold;
-            text-align: center; background: #ffffff; color: var(--text-dark); border: 1px solid var(--border-color); 
+            text-align: center; background: #ffffff; color: var(--text-dark); border: 1px solid var(--text-gray); 
             transition: all 0.3s;
         }
         
         /* ----------------修改重點：凹陷有厚度的內陰影設計---------------- */
         .input-group input[type="number"] {
-            /* 使用強烈的內陰影 (inset) 來創造深凹陷厚度，加上極淡外陰影修飾邊界 */
             box-shadow: inset 5px 5px 12px rgba(0, 0, 0, 0.15), inset -5px -5px 12px rgba(255, 255, 255, 1), 1px 1px 2px rgba(0,0,0,0.03);
-            border: 1px solid rgba(0,0,0,0.05);
+            border: 1px solid var(--text-gray);
         }
         
         .input-group input[type="date"] {
             box-shadow: var(--input-shadow);
+            border: 1px solid var(--text-gray);
         }
 
         .input-group input:focus { outline: none; border-color: var(--primary-color); }
         
         .input-group input[type="number"]:focus { 
-            /* 聚焦時加深陰影並加入主題色的微光暈 */
             box-shadow: inset 6px 6px 14px rgba(0, 0, 0, 0.2), inset -6px -6px 14px rgba(255, 255, 255, 1), 0 0 0 2px rgba(26, 140, 125, 0.2); 
         }
         
