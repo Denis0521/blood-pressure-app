@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bp-app-v8.4';
+const CACHE_NAME = 'bp-app-v8.6';
 const urlsToCache = [
     './index.html',
     './manifest.json',
@@ -19,7 +19,6 @@ self.addEventListener('activate', event => {
             return Promise.all(
                 cacheNames.map(cacheName => {
                     if (cacheName !== CACHE_NAME) {
-                        console.log('刪除舊快取:', cacheName);
                         return caches.delete(cacheName);
                     }
                 })
@@ -31,15 +30,11 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
     if (event.request.mode === 'navigate' || event.request.destination === 'document') {
         event.respondWith(
-            fetch(event.request).catch(() => {
-                return caches.match('./index.html');
-            })
+            fetch(event.request).catch(() => caches.match('./index.html'))
         );
     } else {
         event.respondWith(
-            caches.match(event.request).then(response => {
-                return response || fetch(event.request);
-            })
+            caches.match(event.request).then(response => response || fetch(event.request))
         );
     }
 });
