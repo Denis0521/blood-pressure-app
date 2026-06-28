@@ -99,7 +99,6 @@
             text-shadow: var(--text-3d); display: flex; justify-content: space-between; align-items: center;
         }
         
-        /* 統一所有輸入框高度與白色鏤空質感 */
         .input-group { display: flex; gap: 12px; margin-bottom: 16px; align-items: center; }
         .input-group input { 
             flex: 1; width: 100%; height: 48px; padding: 0 10px; border-radius: 12px; font-size: 16px; font-weight: bold;
@@ -108,7 +107,6 @@
         }
         .input-group input:focus { outline: none; box-shadow: var(--input-shadow), 0 0 0 3px rgba(255, 255, 255, 0.5); }
         
-        /* 統一所有按鈕高度與排版 */
         .btn-group { display: flex; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; }
         button { 
             flex: 1; min-width: 100px; height: 48px; border-radius: 14px; font-size: 16px; font-weight: 900; 
@@ -116,7 +114,6 @@
             text-shadow: var(--text-engrave); background: transparent; box-shadow: var(--btn-shadow);
             display: flex; justify-content: center; align-items: center; gap: 6px; box-sizing: border-box;
         }
-        /* 特製加高按鈕 */
         .btn-tall { height: 60px; font-size: 18px; }
 
         .header-btn { flex: none; height: 38px; min-width: auto; padding: 0 16px; background: var(--card-bg); text-shadow: none; font-size: 14px;}
@@ -128,7 +125,6 @@
         .hint-text { color: var(--primary-color); font-size: 13px; margin-bottom: 12px; font-weight: bold; text-shadow: var(--text-3d); }
         .table-responsive { width: 100%; overflow-x: auto; border-radius: 16px; box-shadow: var(--card-inset); border: 1px solid var(--primary-color); background: transparent; }
         
-        /* 表格與純白/極淺灰記錄欄位 */
         table { width: 100%; border-collapse: collapse; text-align: center; font-size: 15px; background: #ffffff; color: var(--text-dark); min-width: 600px; }
         th, td { padding: 10px 4px; border-bottom: 1px solid var(--primary-color); white-space: nowrap; }
         th { background-color: var(--table-header); font-weight: 900; color: var(--primary-color); text-shadow: var(--text-3d); border-bottom: 2px solid var(--primary-color); }
@@ -184,6 +180,16 @@
         @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.2); } }
         .token-input { width: 100%; height: 48px; padding: 0 12px; border-radius: 12px; font-size: 14px; font-family: monospace; background: #ffffff; color: var(--text-dark); border: 1px solid var(--primary-color); box-shadow: var(--input-shadow); margin-bottom: 12px; box-sizing: border-box; }
         .gist-id-display { font-family: monospace; font-size: 13px; color: var(--text-gray); background: #ffffff; padding: 8px 12px; border-radius: 10px; word-break: break-all; margin-bottom: 14px; border: 1px dashed var(--primary-color); box-shadow: var(--card-inset);}
+
+        /* 待辦事項樣式 */
+        .todo-item { background: #ffffff; border: 1px solid var(--primary-color); border-radius: 12px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; box-shadow: var(--card-inset); }
+        .todo-info { flex: 1; }
+        .todo-title { font-weight: 900; color: var(--text-dark); margin-bottom: 4px; font-size: 15px; }
+        .todo-note { font-size: 13px; color: var(--text-gray); font-weight: bold; }
+        .todo-del-btn { background: #ffebee; color: #c0392b; border: 1px solid #e53935; border-radius: 8px; width: 36px; height: 36px; min-width: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; box-shadow: none; text-shadow: none; font-size: 16px; transition: 0.2s; }
+        .todo-del-btn:active { transform: scale(0.9); }
+        .todo-input-row { display: flex; gap: 8px; margin-bottom: 8px; }
+        .todo-input-row select, .todo-input-row input { flex: 1; height: 42px; border-radius: 10px; border: 1px solid var(--primary-color); padding: 0 10px; font-weight: bold; font-size: 14px; box-shadow: var(--input-shadow); outline: none; background: #fff; color: var(--text-dark); }
     </style>
 </head>
 <body>
@@ -198,7 +204,10 @@
     <div class="subtitle no-print" id="current-time-display">📅 今日：載入中... 🕒 時段：載入中...</div>
     
     <div class="card no-print" id="input-card">
-        <div class="card-title" id="input-card-title">📝 新增 / 修改記錄</div>
+        <div class="card-title">
+            <span id="input-card-title">📝 新增 / 修改記錄</span>
+            <button class="header-btn" onclick="openTodoModal()" style="height: 32px; font-size: 13px;">🔔 待辦</button>
+        </div>
         <div class="input-group">
             <input type="number" id="sys" placeholder="收縮壓" inputmode="numeric">
             <input type="number" id="dia" placeholder="舒張壓" inputmode="numeric">
@@ -240,6 +249,31 @@
                 </thead>
                 <tbody id="record-table-body"></tbody>
             </table>
+        </div>
+    </div>
+
+    <div id="todoModal" class="modal-overlay no-print">
+        <div class="modal-content" style="max-height: 85vh; display: flex; flex-direction: column;">
+            <span class="modal-close" onclick="closeTodoModal()">&times;</span>
+            <div class="card-title" style="margin-top: 5px;">🔔 待辦提醒</div>
+            
+            <div style="background: var(--bg-color); padding: 14px; border-radius: 14px; margin-bottom: 16px; border: 1px dashed var(--primary-color); box-shadow: var(--card-inset);">
+                <div class="todo-input-row">
+                    <select id="todo-type">
+                        <option value="💊 領藥">💊 領藥</option>
+                        <option value="🏥 門診">🏥 門診</option>
+                        <option value="📌 其他">📌 其他</option>
+                    </select>
+                    <input type="date" id="todo-date">
+                </div>
+                <div class="todo-input-row" style="margin-bottom: 0;">
+                    <input type="text" id="todo-note" placeholder="備註內容 (選填)">
+                    <button onclick="addTodo()" class="btn-primary" style="flex: none; width: 42px; height: 42px; min-width: 42px; padding: 0; border-radius: 10px; font-size: 20px;">➕</button>
+                </div>
+            </div>
+
+            <div id="todo-list" style="overflow-y: auto; flex: 1; padding-right: 4px;">
+                </div>
         </div>
     </div>
 
@@ -333,6 +367,9 @@
         let appData = JSON.parse(localStorage.getItem('bpRecords')) || {};
         let editDate = null, editPeriod = null;
         let pendingEditDate = null;
+        
+        // --- 待辦事項資料儲存 ---
+        let todos = JSON.parse(localStorage.getItem('bpTodos')) || [];
 
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
@@ -429,6 +466,67 @@
         function closeTools() { document.getElementById('toolsModal').style.display = 'none'; }
         function openHelp() { document.getElementById('helpModal').style.display = 'flex'; }
         function closeHelp() { document.getElementById('helpModal').style.display = 'none'; }
+
+        // --- 待辦事項相關函數 ---
+        function openTodoModal() {
+            document.getElementById('todoModal').style.display = 'flex';
+            document.getElementById('todo-date').value = formatDate(new Date());
+            renderTodos();
+        }
+        function closeTodoModal() {
+            document.getElementById('todoModal').style.display = 'none';
+        }
+        function renderTodos() {
+            const list = document.getElementById('todo-list');
+            list.innerHTML = '';
+            if (todos.length === 0) {
+                list.innerHTML = '<div style="text-align: center; color: var(--text-gray); font-size: 14px; font-weight: bold; margin-top: 20px;">目前沒有待辦事項 🎉</div>';
+                return;
+            }
+
+            // 依照日期先後排序
+            const sortedTodos = [...todos].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+            sortedTodos.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'todo-item';
+                div.innerHTML = `
+                    <div class="todo-info">
+                        <div class="todo-title">${item.type} <span style="font-size: 13px; color: var(--primary-color);">${item.date}</span></div>
+                        ${item.note ? `<div class="todo-note">${item.note}</div>` : ''}
+                    </div>
+                    <button class="todo-del-btn" onclick="deleteTodo(${item.id})">🗑️</button>
+                `;
+                list.appendChild(div);
+            });
+        }
+        function addTodo() {
+            const type = document.getElementById('todo-type').value;
+            const date = document.getElementById('todo-date').value;
+            const note = document.getElementById('todo-note').value.trim();
+
+            if (!date) {
+                showToast('⚠️ 請選擇待辦日期！', 'error');
+                return;
+            }
+
+            const newTodo = { id: Date.now(), type, date, note };
+            todos.push(newTodo);
+            localStorage.setItem('bpTodos', JSON.stringify(todos));
+            
+            document.getElementById('todo-note').value = '';
+            renderTodos();
+            showToast('✅ 待辦事項已新增！');
+        }
+        function deleteTodo(id) {
+            if (confirm('確定要刪除此待辦事項嗎？')) {
+                todos = todos.filter(t => t.id !== id);
+                localStorage.setItem('bpTodos', JSON.stringify(todos));
+                renderTodos();
+                showToast('🗑️ 待辦已刪除');
+            }
+        }
+        // -------------------------
 
         function openPeriodModal(date) {
             pendingEditDate = date;
