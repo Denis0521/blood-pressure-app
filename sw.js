@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bp-app-v8.8';
+const CACHE_NAME = 'bp-app-v8.7';
 const urlsToCache = [
     './index.html',
     './manifest.json',
@@ -19,7 +19,7 @@ self.addEventListener('activate', event => {
         caches.keys().then(cacheNames => {
             return Promise.all(
                 cacheNames.map(cacheName => {
-                    // 如果快取名稱與當前版本不符，就刪除舊快取，確保載入最新的 UI
+                    // 如果快取名稱與當前版本不符，就刪除舊快取
                     if (cacheName !== CACHE_NAME) {
                         console.log('刪除舊快取:', cacheName);
                         return caches.delete(cacheName);
