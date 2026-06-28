@@ -215,14 +215,17 @@
         <div class="card-title no-print">📊 記錄查詢與輸出</div>
         <div class="print-only" id="print-title">血壓記錄表</div>
         <div class="hint-text no-print">💡 提示：點擊右側「✏️」可修改或補填早晚記錄。</div>
-        <div class="input-group no-print">
-            <input type="date" id="start-date">
-            <span style="color: var(--primary-color); font-weight: bold; flex: none;">至</span>
-            <input type="date" id="end-date">
-        </div>
-        <div class="btn-group no-print">
-            <button class="btn-outline" onclick="renderTable()">🔍 開始查詢</button>
-            <button class="btn-primary" onclick="printNative()">🖨️ 產出 PDF</button>
+        
+        <div style="padding: 0 4%; margin-bottom: 16px;">
+            <div class="input-group no-print" style="position: relative; margin-bottom: 12px;">
+                <input type="date" id="start-date">
+                <span style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); color: var(--primary-color); font-weight: bold; background: var(--card-bg); padding: 0 6px; pointer-events: none; font-size: 15px; border-radius: 8px;">至</span>
+                <input type="date" id="end-date">
+            </div>
+            <div class="btn-group no-print" style="margin-bottom: 0;">
+                <button class="btn-outline" onclick="renderTable()">🔍 開始查詢</button>
+                <button class="btn-primary" onclick="printNative()">🖨️ 產出 PDF</button>
+            </div>
         </div>
         <div class="table-responsive">
             <table id="bp-table">
@@ -281,7 +284,7 @@
                 </div>
             </div>
 
-            <div class="version-text">Version 8.7 ✨ UI Refined Edition</div>
+            <div class="version-text">Version 8.8 ✨ Perfect UI Edition</div>
         </div>
     </div>
 
@@ -313,7 +316,7 @@
                 </ol>
             </div>
 
-            <div class="version-text">Version 8.7 ✨ UI Refined Edition</div>
+            <div class="version-text">Version 8.8 ✨ Perfect UI Edition</div>
         </div>
     </div>
 
