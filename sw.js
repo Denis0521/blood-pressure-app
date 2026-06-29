@@ -1,4 +1,3 @@
-// 定義快取名稱與版本號 (當 index.html 有修改時，請更改此版本號以觸發更新)
 const CACHE_NAME = 'bp-record-v8.7';
 
 // 需要快取的檔案清單
