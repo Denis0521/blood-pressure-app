@@ -1375,7 +1375,7 @@ const BPOCR = (function () {
 // ==== BPOCR-CORE-END ====
 
 
-        const scan = { stream: null, running: false, voter: null, timer: null, canvas: null, last: null, t0: 0 };
+        const scan = { stream: null, track: null, expCap: null, expVal: 0, expT: 0, running: false, voter: null, timer: null, canvas: null, last: null, t0: 0 };
 
         function scanSay(msg) { document.getElementById('scan-status').textContent = msg; }
         function scanShowLive(L) {
@@ -1390,6 +1390,34 @@ const BPOCR = (function () {
             for (let i = 0, j = 0; i < n; i++, j += 4) g[i] = (d[j] * 77 + d[j + 1] * 150 + d[j + 2] * 29) >> 8;
             return { g, w: img.width, h: img.height };
         }
+        // 軟體補光：畫面偏暗或對比太低時，拉伸亮度範圍（任何瀏覽器都適用）
+        function scanEnhance(gi) {
+            const g = gi.g, n = g.length, hist = new Uint32Array(256);
+            for (let i = 0; i < n; i += 4) hist[g[i]]++;
+            const tot = Math.ceil(n / 4);
+            let lo = 0, hi = 255, acc = 0;
+            for (; lo < 255; lo++) { acc += hist[lo]; if (acc > tot * 0.02) break; }
+            acc = 0;
+            for (; hi > 0; hi--) { acc += hist[hi]; if (acc > tot * 0.02) break; }
+            if (hi - lo < 20 || hi - lo >= 170) return gi;
+            const s = 255 / (hi - lo);
+            for (let i = 0; i < n; i++) { const v = (g[i] - lo) * s; g[i] = v < 0 ? 0 : v > 255 ? 255 : v; }
+            return gi;
+        }
+        // 硬體補光：依畫面亮度自動調整相機曝光補償（僅支援的裝置，如 Android Chrome）
+        function scanAdaptExposure(g) {
+            if (!scan.track || !scan.expCap || Date.now() - scan.expT < 700) return;
+            let sum = 0, sat = 0, n = 0;
+            for (let i = 0; i < g.length; i += 16) { const v = g[i]; sum += v; if (v >= 245) sat++; n++; }
+            const mean = sum / n, satR = sat / n, c = scan.expCap;
+            let next = scan.expVal;
+            if (satR > 0.06) next -= c.step;            // 過曝（背光數字糊成一片）→ 降低
+            else if (mean < 85 && satR < 0.03) next += c.step; // 太暗 → 提高
+            next = Math.max(c.min, Math.min(c.max, next));
+            if (next === scan.expVal) return;
+            scan.expVal = next; scan.expT = Date.now();
+            scan.track.applyConstraints({ advanced: [{ exposureCompensation: next }] }).catch(() => {});
+        }
         function scanGrab() {
             const v = document.getElementById('scan-video');
             const vw = v.videoWidth, vh = v.videoHeight;
@@ -1402,7 +1430,9 @@ const BPOCR = (function () {
             scan.canvas.width = cw; scan.canvas.height = ch;
             const ctx = scan.canvas.getContext('2d', { willReadFrequently: true });
             ctx.drawImage(v, (vw - sw) / 2, (vh - sh) / 2, sw, sh, 0, 0, cw, ch);
-            return scanToGray(ctx.getImageData(0, 0, cw, ch));
+            const gi = scanToGray(ctx.getImageData(0, 0, cw, ch));
+            scanAdaptExposure(gi.g);
+            return scanEnhance(gi);
         }
 
         async function startScanCamera() {
@@ -1419,10 +1449,14 @@ const BPOCR = (function () {
                 await video.play();
                 try {
                     const tr = scan.stream.getVideoTracks()[0];
+                    scan.track = tr; scan.expCap = null; scan.expVal = 0;
                     const caps = tr.getCapabilities ? tr.getCapabilities() : {};
-                    if (caps.focusMode && caps.focusMode.indexOf('continuous') >= 0) await tr.applyConstraints({ advanced: [{ focusMode: 'continuous' }] });
+                    if (caps.focusMode && caps.focusMode.indexOf('continuous') >= 0) await tr.applyConstraints({ advanced: [{ focusMode: 'continuous' }] }).catch(() => {});
+                    if (caps.exposureMode && caps.exposureMode.indexOf('continuous') >= 0) await tr.applyConstraints({ advanced: [{ exposureMode: 'continuous' }] }).catch(() => {});
+                    const ec = caps.exposureCompensation;
+                    if (ec && ec.max > ec.min) scan.expCap = { min: ec.min, max: ec.max, step: ec.step || (ec.max - ec.min) / 8 };
                 } catch (e) {}
-                scanSay('📍 讓血壓計液晶螢幕佔滿畫面、數字盡量水平，關閉閃光燈。');
+                scanSay('📍 讓血壓計液晶螢幕佔滿畫面、數字盡量水平，相機會自動補光。');
                 scan.t0 = Date.now();
                 scan.running = true;
                 scanLoop();
@@ -1435,6 +1469,7 @@ const BPOCR = (function () {
             scan.running = false;
             if (scan.timer) { clearTimeout(scan.timer); scan.timer = null; }
             if (scan.stream) { scan.stream.getTracks().forEach(t => t.stop()); scan.stream = null; }
+            scan.track = null; scan.expCap = null;
             const v = document.getElementById('scan-video');
             if (v) v.srcObject = null;
         }
@@ -1495,7 +1530,7 @@ const BPOCR = (function () {
                 cv.width = w; cv.height = h;
                 const cx = cv.getContext('2d', { willReadFrequently: true });
                 cx.drawImage(bmp, 0, 0, w, h);
-                const gi = scanToGray(cx.getImageData(0, 0, w, h));
+                const gi = scanEnhance(scanToGray(cx.getImageData(0, 0, w, h)));
                 const v = new BPOCR.Voter();
                 v.add(BPOCR.decodePhoto(gi.g, gi.w, gi.h));
                 const L = v.leaders(1, 1.5);
